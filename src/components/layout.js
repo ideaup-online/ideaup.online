@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import LayoutBannerFull from '../components/layout-banner-full';
 import LayoutBannerCompact from '../components/layout-banner-compact';
 import LayoutFooter from '../components/layout-footer';

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import IdeaUpSiteLogo from '../components/icons/idea-up-site-logo';
 import IdeaUpTextLogo from '../components/icons/idea-up-text-logo';
 

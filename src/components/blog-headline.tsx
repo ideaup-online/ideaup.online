@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import IdeaUpElectronicsIcon from '../components/icons/idea-up-electronics-icon';
 import IdeaUpAstronomyIcon from '../components/icons/idea-up-astronomy-icon';
 import IdeaUpPhotographyIcon from '../components/icons/idea-up-photography-icon';

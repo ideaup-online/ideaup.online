@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import toReactComponent from 'svgr.macro';
 import SvgInline from '../../components/svg-inline';
 
@@ -42,7 +42,6 @@ const StyledSvg = styled(SvgInline)`
 
 class IdeaUpSiteLogo extends React.Component {
   render() {
-    console.log(`class: ${this.props.className} id: ${this.props.id}`);
     return (
       <StyledSvg
         className={this.props.className}

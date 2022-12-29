@@ -1,12 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import {
   Field,
   DoubleField,
   DropDownSelectField,
   Button,
 } from './fancy-fields';
-import SmartQuote from './smart-quote';
+import { smartquotes } from 'smartquotes-ts';
 
 //
 // Container style
@@ -267,7 +267,7 @@ class NoTrailCalculator extends React.Component {
           </LeftColumn>
           <RightColumn>
             <ColumnHeading>
-              <SmartQuote>{"We'll Calculate These"}</SmartQuote>
+              {String(smartquotes("We'll Calculate These"))}
             </ColumnHeading>
             <Field
               label="Sensor Pixel Size:"

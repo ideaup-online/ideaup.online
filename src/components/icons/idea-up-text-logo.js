@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import toReactComponent from 'svgr.macro';
 import SvgInline from '../../components/svg-inline';
 

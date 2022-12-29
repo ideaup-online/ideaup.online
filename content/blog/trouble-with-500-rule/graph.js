@@ -1,7 +1,7 @@
-import React from "react"
-import styled from "styled-components"
-import toReactComponent from "svgr.macro"
-import SvgInline from "../../../src/components/svg-inline"
+import React from 'react';
+import { styled } from '@emotion/css';
+import toReactComponent from 'svgr.macro';
+import SvgInline from '../../../src/components/svg-inline';
 
 const StyledSvg = styled(SvgInline)`
   .graph-vertical-grid-major-label {
@@ -25,16 +25,16 @@ const StyledSvg = styled(SvgInline)`
   .graph-vertical-grid-major {
     stroke: #606060;
   }
-`
+`;
 
-const Graph = props => {
+const Graph = (props) => {
   return (
     <StyledSvg
       id={props.id}
       className={props.className}
-      component={toReactComponent("./px-graph.svg")}
+      component={toReactComponent('./px-graph.svg')}
     />
-  )
-}
+  );
+};
 
-export default Graph
+export default Graph;

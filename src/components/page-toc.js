@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 const TOCWrapper = styled.div`
   color: rgb(160, 160, 160);
