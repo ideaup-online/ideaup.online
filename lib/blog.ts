@@ -12,7 +12,7 @@ export function getSortedBlogHeadlineData(): BlogHeadlineData[] {
     .readdirSync(blogDirectory, { withFileTypes: true })
     .filter((dirent) => dirent.isDirectory())
     .map((dirent) => dirent.name);
-  const blogHeadlineData: BlogHeadlineData[] = [];
+  const allHeadlineData: BlogHeadlineData[] = [];
   blogPostDirs.forEach((blogPostDir) => {
     // Read markdown file as string
     let fullPath = path.join(blogDirectory, blogPostDir, 'index.md');
@@ -29,7 +29,7 @@ export function getSortedBlogHeadlineData(): BlogHeadlineData[] {
       const readingTimeResult = readingTime(matterResult.content);
 
       // Combine the data with the id
-      blogHeadlineData.push({
+      allHeadlineData.push({
         id: blogPostDir,
         title: matterResult.data.title,
         date: matterResult.data.date,
@@ -42,7 +42,7 @@ export function getSortedBlogHeadlineData(): BlogHeadlineData[] {
   });
 
   // Sort post headlines by date
-  return blogHeadlineData.sort((a, b) => {
+  return allHeadlineData.sort((a, b) => {
     if (new Date(a.date) < new Date(b.date)) {
       return 1;
     } else {
