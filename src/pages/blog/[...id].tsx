@@ -128,6 +128,7 @@ const MDXWrapper = styled.div`
   }
   h4 {
     color: var(--accent-color);
+    font-weight: 400;
   }
   p {
     font-family: 'Solway', serif;
