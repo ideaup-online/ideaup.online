@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import IdeaUpElectronicsIcon from '../components/icons/idea-up-electronics-icon';
 import IdeaUpAstronomyIcon from '../components/icons/idea-up-astronomy-icon';
 import IdeaUpPhotographyIcon from '../components/icons/idea-up-photography-icon';
-import SmartQuote from '../components/smart-quote';
+import { BlogHeadlineData } from 'lib/blog-types';
 import { format } from 'date-fns';
+import smartquotes from 'smartquotes-ts';
 
 const StyledElectronicsIcon = styled(IdeaUpElectronicsIcon)`
   width: 2.5em;
@@ -115,46 +116,52 @@ const PostIcon = styled.div`
   padding-top: 0.2em;
 `;
 
-function Icon(props) {
-  if ('electronics' === props.category) {
+function Icon({ category }: { category: string }): JSX.Element {
+  if ('electronics' === category) {
     return <StyledElectronicsIcon />;
-  } else if ('astronomy' === props.category) {
+  } else if ('astronomy' === category) {
     return <StyledAstronomyIcon />;
-  } else if ('photography' === props.category) {
+  } else if ('photography' === category) {
     return <StyledPhotographyIcon />;
+  } else {
+    return <div>{category}</div>;
   }
 }
 
-const BlogHeadline = ({ postData, className }) => (
+const BlogHeadline = ({
+  headlineData,
+  className,
+}: {
+  headlineData: BlogHeadlineData;
+  className?: string;
+}) => (
   <PostWrapper className={className}>
     <PostIcon>
-      <Icon category={postData.category} />
+      <Icon category={headlineData.category} />
     </PostIcon>
     <PostTitle>
-      <Link href={`blog/${postData.category}/${postData.id}`}>
-        <SmartQuote>{postData.title}</SmartQuote>
+      <Link href={`blog/${headlineData.category}/${headlineData.id}`}>
+        {String(smartquotes(headlineData.title))}
       </Link>
     </PostTitle>
     <PostDetails>
       <PostDescription>
-        <SmartQuote>{postData.description}</SmartQuote>
+        {String(smartquotes(headlineData.description))}
       </PostDescription>
       <PostDateTTRWrapper>
         <PostDate>
           <span role="img" aria-label="date posted">
             📆{' '}
           </span>
-          <span>{format(new Date(postData.date), 'MMMM dd, yyyy')}</span> in{' '}
-          <span>{postData.category}</span>
+          <span>{format(new Date(headlineData.date), 'MMMM dd, yyyy')}</span> in{' '}
+          <span>{headlineData.category}</span>
         </PostDate>
         <PostTTR>
           <span role="img" aria-label="time to read">
             ⏱{' '}
           </span>
-          <span>{Math.ceil(postData.readingMinutes)}</span> min ≈&nbsp;
-          <span>{postData.readingWords}</span> words
-          {/* <span>??</span> min ≈&nbsp;
-          <span>??</span> words */}
+          <span>{Math.ceil(headlineData.readingMinutes)}</span> min ≈&nbsp;
+          <span>{headlineData.readingWords}</span> words
         </PostTTR>
       </PostDateTTRWrapper>
     </PostDetails>

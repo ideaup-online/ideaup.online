@@ -1,18 +1,18 @@
 import fs, { existsSync } from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { PostData } from './blog-types';
+import { BlogHeadlineData } from './blog-types';
 import readingTime from 'reading-time';
 
 const blogDirectory = path.join(process.cwd(), 'content/blog');
 
-export function getSortedPostsData(): PostData[] {
+export function getSortedBlogHeadlineData(): BlogHeadlineData[] {
   // Get directories under /content/blog
   const blogPostDirs = fs
     .readdirSync(blogDirectory, { withFileTypes: true })
     .filter((dirent) => dirent.isDirectory())
     .map((dirent) => dirent.name);
-  const allPostsData: PostData[] = [];
+  const blogHeadlineData: BlogHeadlineData[] = [];
   blogPostDirs.forEach((blogPostDir) => {
     // Read markdown file as string
     let fullPath = path.join(blogDirectory, blogPostDir, 'index.md');
@@ -29,7 +29,7 @@ export function getSortedPostsData(): PostData[] {
       const readingTimeResult = readingTime(matterResult.content);
 
       // Combine the data with the id
-      allPostsData.push({
+      blogHeadlineData.push({
         id: blogPostDir,
         title: matterResult.data.title,
         date: matterResult.data.date,
@@ -41,8 +41,8 @@ export function getSortedPostsData(): PostData[] {
     }
   });
 
-  // Sort posts by date
-  return allPostsData.sort((a, b) => {
+  // Sort post headlines by date
+  return blogHeadlineData.sort((a, b) => {
     if (new Date(a.date) < new Date(b.date)) {
       return 1;
     } else {
