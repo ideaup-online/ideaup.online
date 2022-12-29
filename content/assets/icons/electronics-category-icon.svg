@@ -1,0 +1,58 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 876.22 876.22"
+  class="{this.props.class}"
+  id="{this.props.id}"
+  data-name="IdeaUP Electronics Icon"
+>
+  <title>Electronics Category</title>
+  <g
+    class="idea-up-electronics-icon-label"
+    data-name="IdeaUP Electronics Icon Label"
+  >
+    <path
+      class="idea-up-electronics-icon-battery icon-label"
+      d="M450.45,784.65H635.92c17.93,0,34.58-11.29,34.58-36V290.09c0-24.71-16.65-36-34.58-36H557.78c0-31.71-16.94-46.53-36.85-46.53H483.07c-19.9,0-36.85,14.82-36.85,46.53H368.08c-17.93,0-34.58,11.3-34.58,36V748.65c0,24.71,16.65,36,34.58,36H553.55"
+      transform="translate(-61.89 -61.89)"
+    />
+    <rect
+      class="idea-up-electronics-icon-charge icon-label"
+      x="325.44"
+      y="602.92"
+      width="229.35"
+      height="64.97"
+    />
+    <rect
+      class="idea-up-electronics-icon-charge icon-label"
+      x="325.44"
+      y="497.02"
+      width="229.35"
+      height="64.97"
+    />
+    <line
+      class="idea-up-electronics-icon-shine icon-label icon-shine"
+      x1="325.44"
+      y1="254.53"
+      x2="325.44"
+      y2="353.54"
+    />
+    <line
+      class="idea-up-electronics-icon-shine icon-label icon-shine"
+      x1="325.44"
+      y1="372.29"
+      x2="325.44"
+      y2="379.17"
+    />
+  </g>
+  <g
+    class="idea-up-electronics-icon-border"
+    data-name="IdeaUP Electronics Icon Border"
+  >
+    <circle
+      class="idea-up-electronics-icon-border-circle icon-border"
+      cx="438.11"
+      cy="438.11"
+      r="411.11"
+    />
+  </g>
+</svg>
