@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
+// import { useStaticQuery, graphql } from 'gatsby';
 import styled from '@emotion/styled';
-import Img from 'gatsby-image';
+// import Img from 'gatsby-image';
 
 const PhotoFlipper = styled.div``;
 
@@ -22,6 +22,8 @@ const Card = styled.div`
   grid-row: 1 / auto;
   display: grid;
 `;
+
+const Img = styled.img``;
 
 const CentralCropImage = styled(Img)`
   width: 40%;

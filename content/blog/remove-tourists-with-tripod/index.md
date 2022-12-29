@@ -9,7 +9,7 @@ You can't get that Eagles song out of your head...so you make the journey to go 
 
 This place is crawling with tourists--all day, every day. It's clear to see why, there are statues of Jackson Browne and Glenn Frey and a giant historic Route 66 sign painted in the intersection. Heck, there's even a girl, my lord, in a flatbed Ford! What's not to love?
 
-![Winslow AZ](./IMG_0241.JPG 'Corner Park in Winslow, AZ')
+![Winslow AZ](./IMG_0241.jpg 'Corner Park in Winslow, AZ')
 
 "Wait a minute," you say, "where is everyone?"
 
@@ -123,11 +123,11 @@ Astrophotographers use this technique for every image because they are working w
 
 This is true of any low-light photography. Try it next time you take something like a night city scene or a moonlit lake.
 
-![Milky Way](./IMG_0360.JPG 'Milky Way taken in Koosharem, UT')
+![Milky Way](./IMG_0360.jpg 'Milky Way taken in Koosharem, UT')
 
 You can use this technique to simulate long exposures. This is especially handy in situations when a long exposure isn't possible, like in bright sunlight (without an ND filter).
 
-![London Bridge](./IMG_0230.JPG 'London Bridge in Lake Havasu City, AZ')
+![London Bridge](./IMG_0230.jpg 'London Bridge in Lake Havasu City, AZ')
 
 This is the London Bridge ([in Arizona, of course!](<https://en.wikipedia.org/wiki/London_Bridge_(Lake_Havasu_City)>)). The water was quite choppy the day this was taken and would have resulted in a very busy, distracting foreground. Thirty images were combined using the technique described in this post to simulate a long exposure. This softened the water and let the majesty of the bridge shine through.
 

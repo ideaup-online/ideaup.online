@@ -9,6 +9,9 @@ import IdeaUpAstronomyIcon from '@/components/icons/idea-up-astronomy-icon';
 import IdeaUpPhotographyIcon from '@/components/icons/idea-up-photography-icon';
 import PageTOC from '@/components/page-toc';
 import smartquotes from 'smartquotes-ts';
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
+import dynamic from 'next/dynamic';
 
 const StyledElectronicsIcon = styled(IdeaUpElectronicsIcon)`
   width: 5em;
@@ -128,6 +131,7 @@ const MDXWrapper = styled.div`
   p {
     font-family: 'Solway', serif;
     line-height: 1.4;
+    margin: 1em 0;
   }
   blockquote {
     overflow-wrap: break-word;
@@ -345,17 +349,45 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }: { params: { id: string[] } }) {
   const blogPostData = getBlogPostData(params.id[1]);
+
+  const mdxSource = await serialize(blogPostData.content, {
+    // Optionally pass remark/rehype plugins
+    mdxOptions: {
+      remarkPlugins: [],
+      rehypePlugins: [],
+    },
+    scope: {
+      title: blogPostData.title,
+      date: blogPostData.date,
+      category: blogPostData.category,
+      description: blogPostData.description,
+    },
+  });
+
   return {
     props: {
       blogPostData,
+      source: mdxSource,
     },
   };
 }
 
+// Custom components/renderers to pass to MDX.
+// Since the MDX files aren't loaded by webpack, they have no knowledge of how
+// to handle import statements. Instead, you must include components in scope
+// here.
+// import NoTrailCalculator from '../../../src/components/no-trail-calculator.js';
+// import TestPhotoFlipper from '../../../src/components/blog/trouble-with-500-rule/test-photo-flipper.js';
+
 export default function BlogPost({
   blogPostData,
+  source,
 }: {
   blogPostData: BlogPostData;
+  source: MDXRemoteSerializeResult<
+    Record<string, unknown>,
+    Record<string, string>
+  >;
 }): JSX.Element {
   useEffect(() => {
     const modal = document.getElementById('image-modal');
@@ -390,6 +422,29 @@ export default function BlogPost({
       document.removeEventListener('keydown', onKeyDown, false);
     };
   }, []);
+
+  const components = {
+    img: (props: any) => {
+      const newProps = {};
+      Object.keys(props).forEach((key: string) => {
+        if ('src' === key) {
+          newProps[key] = `/images/blog/${blogPostData.id}/${props[key]}`;
+        } else {
+          newProps[key] = props[key];
+        }
+      });
+      return <img {...newProps}></img>;
+    },
+    NoTrailCalculator: dynamic(
+      () => import('../../components/no-trail-calculator'),
+    ),
+    TestPhotoFlipper: dynamic(
+      () =>
+        import(
+          '../../components/blog/trouble-with-500-rule/test-photo-flipper'
+        ),
+    ),
+  };
 
   return (
     <Layout
@@ -434,7 +489,9 @@ export default function BlogPost({
                   }
                 />
               </NavWrapper>
-              <MDXWrapper id="post-content">{blogPostData.content}</MDXWrapper>
+              <MDXWrapper id="post-content">
+                <MDXRemote {...source} components={components} />
+              </MDXWrapper>
             </PostContent>
           </StyledArticle>
           <nav>
