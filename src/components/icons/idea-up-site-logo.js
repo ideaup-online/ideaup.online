@@ -42,6 +42,7 @@ const StyledSvg = styled(SvgInline)`
 
 class IdeaUpSiteLogo extends React.Component {
   render() {
+    console.log(`class: ${this.props.className} id: ${this.props.id}`);
     return (
       <StyledSvg
         className={this.props.className}

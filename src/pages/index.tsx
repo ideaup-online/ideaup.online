@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import Layout from '../components/layout';
-import BlogHeadline from '../components/blog-headline';
-import { getSortedBlogHeadlineData } from '../../lib/blog';
-import { BlogHeadlineData } from '../../lib/blog-types';
+import Layout from '@/components/layout';
+import BlogHeadline from '@/components/blog-headline';
+import { getAllSortedBlogHeadlineData } from 'lib/blog';
+import { BlogHeadlineData } from 'lib/blog-types';
 
 const StyledContent = styled.div`
   max-width: 76ch;
@@ -12,7 +12,7 @@ const StyledContent = styled.div`
 export async function getStaticProps(): Promise<{
   props: { allHeadlineData: BlogHeadlineData[] };
 }> {
-  const allHeadlineData = getSortedBlogHeadlineData();
+  const allHeadlineData = getAllSortedBlogHeadlineData();
   return {
     props: {
       allHeadlineData,
