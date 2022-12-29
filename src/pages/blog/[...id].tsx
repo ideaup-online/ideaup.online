@@ -12,15 +12,16 @@ import smartquotes from 'smartquotes-ts';
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import dynamic from 'next/dynamic';
+import { format } from 'date-fns';
 
 const StyledElectronicsIcon = styled(IdeaUpElectronicsIcon)`
   width: 5em;
   height: 5em;
   .icon-label {
-    stroke: coral;
+    stroke: var(--accent-color);
   }
   .icon-border {
-    stroke: coral;
+    stroke: var(--base-color);
   }
 `;
 
@@ -28,10 +29,10 @@ const StyledAstronomyIcon = styled(IdeaUpAstronomyIcon)`
   width: 5em;
   height: 5em;
   .icon-label {
-    stroke: coral;
+    stroke: var(--accent-color);
   }
   .icon-border {
-    stroke: coral;
+    stroke: var(--base-color);
   }
 `;
 
@@ -39,16 +40,16 @@ const StyledPhotographyIcon = styled(IdeaUpPhotographyIcon)`
   width: 5em;
   height: 5em;
   .icon-label {
-    stroke: coral;
+    stroke: var(--accent-color);
   }
   .icon-border {
-    stroke: coral;
+    stroke: var(--base-color);
   }
 `;
 
 const PostContent = styled.section`
   order: 2;
-  color: rgb(160, 160, 160);
+  color: var(--text-color);
   max-width: 40em;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 3fr;
@@ -120,13 +121,13 @@ const MDXWrapper = styled.div`
     color: #00abff;
   }
   h3 {
-    color: coral;
+    color: var(--base-color);
     font-size: 1.25em;
     font-family: 'Dosis', sans-serif;
     font-weight: 400;
   }
   h4 {
-    color: rgb(192, 192, 192);
+    color: var(--accent-color);
   }
   p {
     font-family: 'Solway', serif;
@@ -174,7 +175,7 @@ const PostDate = styled.div`
 
 const PostTitle = styled.div`
   order: 1;
-  color: coral;
+  color: var(--base-color);
   font-family: 'Dosis', sans-serif;
   font-size: 1.9em;
   font-weight: 500;
@@ -384,10 +385,7 @@ export default function BlogPost({
   source,
 }: {
   blogPostData: BlogPostData;
-  source: MDXRemoteSerializeResult<
-    Record<string, unknown>,
-    Record<string, string>
-  >;
+  source: MDXRemoteSerializeResult<Record<string, unknown>>;
 }): JSX.Element {
   useEffect(() => {
     const modal = document.getElementById('image-modal');
@@ -466,7 +464,9 @@ export default function BlogPost({
               </IconWrapper>
               <Headline>
                 <PostTitle>{String(smartquotes(blogPostData.title))}</PostTitle>
-                <PostDate>{blogPostData.date}</PostDate>
+                <PostDate>
+                  {format(new Date(blogPostData.date), 'MMMM dd, yyyy')}
+                </PostDate>
               </Headline>
             </PostHeader>
             <PostContent>
