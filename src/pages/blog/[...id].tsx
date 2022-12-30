@@ -378,8 +378,7 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
                   style: {
                     marginLeft: '-20px',
                     marginRight: '4px',
-                    stroke: 'var(--text-color)',
-                    opacity: '0.4',
+                    stroke: 'var(--heading-link-icon-color)',
                   },
                 },
                 children: [
