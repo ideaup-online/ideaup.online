@@ -60,13 +60,13 @@ const SmallText = styled.div`
 `;
 
 const LayoutBannerFull = () => {
-  // useEffect(() => {
-  //   const rays = document.getElementsByClassName('idea-up-site-icon-rays');
+  useEffect(() => {
+    const rays = document.getElementsByClassName('idea-up-site-icon-rays');
 
-  //   Array.from(rays).forEach((ray, idx) => {
-  //     ray.style.stroke = 'var(--accent-color)';
-  //   });
-  // }, []);
+    Array.from(rays).forEach((ray, idx) => {
+      ray.style.stroke = 'var(--accent-color)';
+    });
+  }, []);
   return (
     <Banner>
       <Link href="/">
