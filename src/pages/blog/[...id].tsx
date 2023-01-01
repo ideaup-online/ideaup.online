@@ -451,13 +451,13 @@ export default function BlogPost({
     document.addEventListener('keydown', onKeyDown, false);
 
     // See if there is another way to do this
-    // const linkTag = document.createElement('link');
-    // linkTag.rel = 'stylesheet';
-    // linkTag.href = '/prism.css';
-    // document.getElementsByTagName('head')[0].appendChild(linkTag);
-    // const scriptTag = document.createElement('script');
-    // scriptTag.src = '/prism.js';
-    // document.getElementsByTagName('head')[0].appendChild(scriptTag);
+    const linkTag = document.createElement('link');
+    linkTag.rel = 'stylesheet';
+    linkTag.href = '/prism.css';
+    document.getElementsByTagName('head')[0].appendChild(linkTag);
+    const scriptTag = document.createElement('script');
+    scriptTag.src = '/prism.js';
+    document.getElementsByTagName('head')[0].appendChild(scriptTag);
 
     return () => {
       document.removeEventListener('keydown', onKeyDown, false);
@@ -560,86 +560,84 @@ export default function BlogPost({
   };
 
   return (
-    <>
-      <Script src="/prism.js" />
-      <Layout
-        title={blogPostData.title}
-        showStyle="compact"
-        content={
-          <div>
-            <Modal id="image-modal">
-              <span className="modal-close" id="modal-close">
-                &times;
-              </span>
-              <img className="modal-content" id="image-modal-content" alt="" />
-              <div id="modal-caption"></div>
-            </Modal>
-            <StyledArticle>
-              <PostHeader id="post-header">
-                <IconWrapper>
-                  <Icon category={blogPostData.category} />
-                </IconWrapper>
-                <Headline>
-                  <PostTitle>
-                    {String(smartquotes(blogPostData.title))}
-                  </PostTitle>
-                  <PostDate>
-                    {format(new Date(blogPostData.date), 'MMMM dd, yyyy')}
-                  </PostDate>
-                </Headline>
-              </PostHeader>
-              <PostContent>
-                <NavWrapper id="nav-wrapper">
-                  <PageTOC
-                    up={{ target: '/', text: 'Back to List' }}
-                    previous={
-                      null
-                      // previous && {
-                      //   target: previous.fields.slug,
-                      //   text: previous.frontmatter.title,
-                      // }
-                    }
-                    next={
-                      null
-                      // next && {
-                      //   target: next.fields.slug,
-                      //   text: next.frontmatter.title,
-                      // }
-                    }
-                  />
-                </NavWrapper>
-                <MDXWrapper id="post-content">
-                  <MDXRemote {...source} components={components} />
-                </MDXWrapper>
-              </PostContent>
-            </StyledArticle>
-            <nav>
-              <NavContainer>
-                <NavPrevious>
-                  {
+    // <>
+    //   <Script src="/prism.js" />
+    <Layout
+      title={blogPostData.title}
+      showStyle="compact"
+      content={
+        <div>
+          <Modal id="image-modal">
+            <span className="modal-close" id="modal-close">
+              &times;
+            </span>
+            <img className="modal-content" id="image-modal-content" alt="" />
+            <div id="modal-caption"></div>
+          </Modal>
+          <StyledArticle>
+            <PostHeader id="post-header">
+              <IconWrapper>
+                <Icon category={blogPostData.category} />
+              </IconWrapper>
+              <Headline>
+                <PostTitle>{String(smartquotes(blogPostData.title))}</PostTitle>
+                <PostDate>
+                  {format(new Date(blogPostData.date), 'MMMM dd, yyyy')}
+                </PostDate>
+              </Headline>
+            </PostHeader>
+            <PostContent>
+              <NavWrapper id="nav-wrapper">
+                <PageTOC
+                  up={{ target: '/', text: 'Back to List' }}
+                  previous={
                     null
-                    // previous && (
-                    //   <Link href={previous.fields.slug} rel="prev">
-                    //     ← {String(smartquotes(previous.frontmatter.title))}
-                    //   </Link>
-                    // )
+                    // previous && {
+                    //   target: previous.fields.slug,
+                    //   text: previous.frontmatter.title,
+                    // }
                   }
-                </NavPrevious>
-                <NavNext>
-                  {
+                  next={
                     null
-                    // next && (
-                    //   <Link href={next.fields.slug} rel="next">
-                    //     {String(smartquotes(next.frontmatter.title))} →
-                    //   </Link>
-                    // )
+                    // next && {
+                    //   target: next.fields.slug,
+                    //   text: next.frontmatter.title,
+                    // }
                   }
-                </NavNext>
-              </NavContainer>
-            </nav>
-          </div>
-        }
-      />
-    </>
+                />
+              </NavWrapper>
+              <MDXWrapper id="post-content">
+                <MDXRemote {...source} components={components} />
+              </MDXWrapper>
+            </PostContent>
+          </StyledArticle>
+          <nav>
+            <NavContainer>
+              <NavPrevious>
+                {
+                  null
+                  // previous && (
+                  //   <Link href={previous.fields.slug} rel="prev">
+                  //     ← {String(smartquotes(previous.frontmatter.title))}
+                  //   </Link>
+                  // )
+                }
+              </NavPrevious>
+              <NavNext>
+                {
+                  null
+                  // next && (
+                  //   <Link href={next.fields.slug} rel="next">
+                  //     {String(smartquotes(next.frontmatter.title))} →
+                  //   </Link>
+                  // )
+                }
+              </NavNext>
+            </NavContainer>
+          </nav>
+        </div>
+      }
+    />
+    // </>
   );
 }

@@ -1,6 +1,6 @@
 import type { AppProps } from 'next/app';
+// import '@/public/prism.css';
 import '@/styles/globals.css';
-import '@/public/prism.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />;
