@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Script from 'next/script';
 import Layout from '@/components/layout';
 import { getAllBlogIdData, getBlogPostData } from 'lib/blog';
 import { BlogPostData } from 'lib/blog-types';
@@ -16,6 +17,9 @@ import { format } from 'date-fns';
 import remarkSmartypants from '@silvenon/remark-smartypants';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import path from 'path';
+import NoTrailCalculator from '@/components/no-trail-calculator';
+import TestPhotoFlipper from '@/components/blog/trouble-with-500-rule/test-photo-flipper';
 
 const StyledElectronicsIcon = styled(IdeaUpElectronicsIcon)`
   width: 5em;
@@ -154,11 +158,12 @@ const MDXWrapper = styled.div`
     cursor: pointer;
   }
   .anchor svg {
-    fill: rgb(160, 160, 160);
+    stroke: var(--heading-link-icon-color);
     width: 25;
   }
   .anchor {
-    margin-left: -16px;
+    margin-left: -20px;
+    margin-right: 4px;
   }
 `;
 
@@ -361,6 +366,7 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
       remarkPlugins: [remarkSmartypants],
       rehypePlugins: [
         rehypeSlug,
+        // [rehypePrism, { plugins: ['line-numbers'] }],
         [
           rehypeAutolinkHeadings,
           {
@@ -375,11 +381,6 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
                   version: '1.1',
                   viewBox: '0 0 16 16',
                   width: '16',
-                  style: {
-                    marginLeft: '-20px',
-                    marginRight: '4px',
-                    stroke: 'var(--heading-link-icon-color)',
-                  },
                 },
                 children: [
                   {
@@ -393,9 +394,11 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
                 ],
               },
             ],
+            properties: { className: 'anchor', ariaHidden: true, tabIndex: -1 },
           },
         ],
       ],
+      development: false,
     },
     scope: {
       title: blogPostData.title,
@@ -463,103 +466,180 @@ export default function BlogPost({
 
   const components = {
     img: (props: any) => {
-      const newProps = {};
-      Object.keys(props).forEach((key: string) => {
-        if ('src' === key) {
-          newProps[key] = `/images/blog/${blogPostData.id}/${props[key]}`;
-        } else {
-          newProps[key] = props[key];
-        }
-      });
+      const newProps = { ...props };
+      newProps.src = `/images/blog/${blogPostData.id}/${props.src}`;
       return <img {...newProps}></img>;
     },
-    NoTrailCalculator: dynamic(
-      () => import('../../components/no-trail-calculator'),
-    ),
-    TestPhotoFlipper: dynamic(
-      () =>
-        import(
-          '../../components/blog/trouble-with-500-rule/test-photo-flipper'
-        ),
-    ),
+    code: (props: any) => {
+      if (!props.className) {
+        return <code {...props}>{props.children}</code>;
+      } else {
+        const myProps = JSON.parse(JSON.stringify(props));
+        let match = null;
+        let dataLine = null;
+        let dataSrc = null;
+        do {
+          match = myProps.className.match(/\{[^[{}]*\}/);
+          if (match === null) {
+            break;
+          }
+          const matchLen = match[0].length;
+          const baseMatch = match[0].substr(1, matchLen - 2);
+          if (baseMatch === 'line-numbers' || baseMatch === 'no-line-numbers') {
+            myProps.className = myProps.className
+              .substring(0, match.index)
+              .concat(
+                ' ',
+                baseMatch,
+                ' ',
+                myProps.className.substring(match.index + matchLen),
+              );
+          } else {
+            const fileTarget = 'file-';
+            myProps.className = myProps.className
+              .substring(0, match.index)
+              .concat(myProps.className.substring(match.index + matchLen));
+            if (baseMatch.startsWith(fileTarget)) {
+              dataSrc = baseMatch.substring(fileTarget.length);
+            } else {
+              dataLine = baseMatch;
+            }
+          }
+        } while (true);
+        if (dataSrc !== null) {
+          const browserPath = `/blog-data/${blogPostData.id}/${dataSrc}`;
+          if (typeof window === `undefined`) {
+            // not in a browser, copy the file
+            const pathsNew = [process.cwd(), 'public', browserPath];
+            const pathsSource = [
+              process.cwd(),
+              `content/blog/${blogPostData.id}`,
+              dataSrc,
+            ];
+            const newFilePath = path.posix.join(...pathsNew);
+            const sourceFilePath = path.posix.join(...pathsSource);
+            const fs = require('fs-extra');
+            try {
+              fs.ensureDir(path.dirname(newFilePath));
+              fs.copy(sourceFilePath, newFilePath);
+            } catch (err) {
+              console.error(`error copying file`, err);
+            }
+          }
+          return (
+            <pre
+              data-line={dataLine}
+              data-src={browserPath}
+              data-download-link="true"
+              className={myProps.className}
+            ></pre>
+          );
+        } else {
+          return (
+            <pre data-line={dataLine} className={myProps.className}>
+              <code {...myProps} />
+            </pre>
+          );
+        }
+      }
+    },
+    pre: (props: any) => {
+      return props.children;
+    },
+    // NoTrailCalculator: dynamic(
+    //   () => import('../../components/no-trail-calculator'),
+    // ),
+    // TestPhotoFlipper: dynamic(
+    //   () =>
+    //     import(
+    //       '../../components/blog/trouble-with-500-rule/test-photo-flipper'
+    //     ),
+    // ),
+    NoTrailCalculator: NoTrailCalculator,
+    TestPhotoFlipper: TestPhotoFlipper,
   };
 
   return (
-    <Layout
-      title={blogPostData.title}
-      showStyle="compact"
-      content={
-        <div>
-          <Modal id="image-modal">
-            <span className="modal-close" id="modal-close">
-              &times;
-            </span>
-            <img className="modal-content" id="image-modal-content" alt="" />
-            <div id="modal-caption"></div>
-          </Modal>
-          <StyledArticle>
-            <PostHeader id="post-header">
-              <IconWrapper>
-                <Icon category={blogPostData.category} />
-              </IconWrapper>
-              <Headline>
-                <PostTitle>{String(smartquotes(blogPostData.title))}</PostTitle>
-                <PostDate>
-                  {format(new Date(blogPostData.date), 'MMMM dd, yyyy')}
-                </PostDate>
-              </Headline>
-            </PostHeader>
-            <PostContent>
-              <NavWrapper id="nav-wrapper">
-                <PageTOC
-                  up={{ target: '/', text: 'Back to List' }}
-                  previous={
+    <>
+      <Script src="/prism.js" />
+      <Layout
+        title={blogPostData.title}
+        showStyle="compact"
+        content={
+          <div>
+            <Modal id="image-modal">
+              <span className="modal-close" id="modal-close">
+                &times;
+              </span>
+              <img className="modal-content" id="image-modal-content" alt="" />
+              <div id="modal-caption"></div>
+            </Modal>
+            <StyledArticle>
+              <PostHeader id="post-header">
+                <IconWrapper>
+                  <Icon category={blogPostData.category} />
+                </IconWrapper>
+                <Headline>
+                  <PostTitle>
+                    {String(smartquotes(blogPostData.title))}
+                  </PostTitle>
+                  <PostDate>
+                    {format(new Date(blogPostData.date), 'MMMM dd, yyyy')}
+                  </PostDate>
+                </Headline>
+              </PostHeader>
+              <PostContent>
+                <NavWrapper id="nav-wrapper">
+                  <PageTOC
+                    up={{ target: '/', text: 'Back to List' }}
+                    previous={
+                      null
+                      // previous && {
+                      //   target: previous.fields.slug,
+                      //   text: previous.frontmatter.title,
+                      // }
+                    }
+                    next={
+                      null
+                      // next && {
+                      //   target: next.fields.slug,
+                      //   text: next.frontmatter.title,
+                      // }
+                    }
+                  />
+                </NavWrapper>
+                <MDXWrapper id="post-content">
+                  <MDXRemote {...source} components={components} />
+                </MDXWrapper>
+              </PostContent>
+            </StyledArticle>
+            <nav>
+              <NavContainer>
+                <NavPrevious>
+                  {
                     null
-                    // previous && {
-                    //   target: previous.fields.slug,
-                    //   text: previous.frontmatter.title,
-                    // }
+                    // previous && (
+                    //   <Link href={previous.fields.slug} rel="prev">
+                    //     ← {String(smartquotes(previous.frontmatter.title))}
+                    //   </Link>
+                    // )
                   }
-                  next={
+                </NavPrevious>
+                <NavNext>
+                  {
                     null
-                    // next && {
-                    //   target: next.fields.slug,
-                    //   text: next.frontmatter.title,
-                    // }
+                    // next && (
+                    //   <Link href={next.fields.slug} rel="next">
+                    //     {String(smartquotes(next.frontmatter.title))} →
+                    //   </Link>
+                    // )
                   }
-                />
-              </NavWrapper>
-              <MDXWrapper id="post-content">
-                <MDXRemote {...source} components={components} />
-              </MDXWrapper>
-            </PostContent>
-          </StyledArticle>
-          <nav>
-            <NavContainer>
-              <NavPrevious>
-                {
-                  null
-                  // previous && (
-                  //   <Link href={previous.fields.slug} rel="prev">
-                  //     ← {String(smartquotes(previous.frontmatter.title))}
-                  //   </Link>
-                  // )
-                }
-              </NavPrevious>
-              <NavNext>
-                {
-                  null
-                  // next && (
-                  //   <Link href={next.fields.slug} rel="next">
-                  //     {String(smartquotes(next.frontmatter.title))} →
-                  //   </Link>
-                  // )
-                }
-              </NavNext>
-            </NavContainer>
-          </nav>
-        </div>
-      }
-    />
+                </NavNext>
+              </NavContainer>
+            </nav>
+          </div>
+        }
+      />
+    </>
   );
 }

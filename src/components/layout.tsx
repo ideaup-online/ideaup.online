@@ -78,7 +78,19 @@ const FooterArea = styled.div`
 `;
 
 // The Main Event..er..Function
-const Layout = ({ title, showStyle, sbLeft, content, sbRight }) => {
+const Layout = ({
+  title,
+  showStyle,
+  sbLeft,
+  content,
+  sbRight,
+}: {
+  title: string;
+  showStyle: string;
+  sbLeft?: JSX.Element;
+  content: JSX.Element;
+  sbRight?: JSX.Element;
+}): JSX.Element => {
   let pageTitle = 'Idea Up';
   if (title) {
     pageTitle = pageTitle + ' | ' + title;
@@ -86,13 +98,13 @@ const Layout = ({ title, showStyle, sbLeft, content, sbRight }) => {
 
   // Set the header height and select the proper banner
   // layout based on the showStyle prop
-  let Banner;
-  if ('full' === showStyle) {
-    Banner = LayoutBannerFull;
-  } else if ('compact' === showStyle) {
+  let Banner = LayoutBannerFull;
+  if ('compact' === showStyle) {
     Banner = LayoutBannerCompact;
   } else {
-    console.log('Unknown showStyle: ' + showStyle);
+    if ('full' !== showStyle) {
+      console.log('Unknown showStyle: ' + showStyle);
+    }
   }
 
   return (

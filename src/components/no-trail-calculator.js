@@ -6,7 +6,6 @@ import {
   DropDownSelectField,
   Button,
 } from './fancy-fields';
-import { smartquotes } from 'smartquotes-ts';
 
 //
 // Container style
@@ -266,9 +265,7 @@ class NoTrailCalculator extends React.Component {
             />
           </LeftColumn>
           <RightColumn>
-            <ColumnHeading>
-              {String(smartquotes("We'll Calculate These"))}
-            </ColumnHeading>
+            <ColumnHeading>{"We'll Calculate These"}</ColumnHeading>
             <Field
               label="Sensor Pixel Size:"
               decorator="μm"

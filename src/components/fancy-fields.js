@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
-import { smartquotes } from 'smartquotes-ts';
+
 //
 // Field Control Group styles
 //
@@ -197,7 +197,7 @@ const NakedField = (props) => {
     }
     return (
       <FieldContainer className={props.className}>
-        <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
+        <FieldLabel>{props.label}</FieldLabel>
         <Group>
           <Control
             id={props.inputProps.id}
@@ -208,7 +208,7 @@ const NakedField = (props) => {
             onChange={props.inputProps.onChange}
             readOnly={isReadOnly}
           />
-          <Decorator>{String(smartquotes(props.decorator))}</Decorator>
+          <Decorator>{props.decorator}</Decorator>
         </Group>
       </FieldContainer>
     );
@@ -220,7 +220,7 @@ const NakedField = (props) => {
     }
     return (
       <FieldContainer className={props.className}>
-        <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
+        <FieldLabel>{props.label}</FieldLabel>
         <FieldControlGroup>
           <Control
             id={props.inputProps.id}
@@ -291,7 +291,7 @@ const NakedDoubleField = (props) => {
     }
     return (
       <FieldContainer className={props.className}>
-        <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
+        <FieldLabel>{props.label}</FieldLabel>
         <Group>
           <Control1
             id={props.inputPropsLeft.id}
@@ -302,9 +302,7 @@ const NakedDoubleField = (props) => {
             onChange={props.inputPropsLeft.onChange}
             readOnly={isLeftReadOnly}
           />
-          <FieldMiddleDecorator>
-            {String(smartquotes(props.middleDecorator))}
-          </FieldMiddleDecorator>
+          <FieldMiddleDecorator>{props.middleDecorator}</FieldMiddleDecorator>
           <Control2
             id={props.inputPropsRight.id}
             type={props.inputPropsRight.type}
@@ -314,7 +312,7 @@ const NakedDoubleField = (props) => {
             onChange={props.inputPropsRight.onChange}
             readOnly={isRightReadOnly}
           />
-          <Decorator>{String(smartquotes(props.decorator))}</Decorator>
+          <Decorator>{props.decorator}</Decorator>
         </Group>
       </FieldContainer>
     );
@@ -329,7 +327,7 @@ const NakedDoubleField = (props) => {
     }
     return (
       <FieldContainer className={props.className}>
-        <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
+        <FieldLabel>{props.label}</FieldLabel>
         <FieldDoubleControlGroup>
           <Control1
             id={props.inputPropsLeft.id}
@@ -340,9 +338,7 @@ const NakedDoubleField = (props) => {
             onChange={props.inputPropsLeft.onChange}
             readOnly={isLeftReadOnly}
           />
-          <FieldMiddleDecorator>
-            {String(smartquotes(props.middleDecorator))}
-          </FieldMiddleDecorator>
+          <FieldMiddleDecorator>{props.middleDecorator}</FieldMiddleDecorator>
           <Control2
             id={props.inputPropsRight.id}
             type={props.inputPropsRight.type}
@@ -556,7 +552,7 @@ const NakedDropDownSelectField = (props) => {
 
   return (
     <FieldContainer className={props.className}>
-      <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
+      <FieldLabel>{props.label}</FieldLabel>
       <Group>
         <CustomSelect id={props.inputProps.id + '-custom-select'}>
           <select

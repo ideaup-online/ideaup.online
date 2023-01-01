@@ -160,120 +160,121 @@ function onNext(e) {
 }
 
 const TestPhotoFlipper = (props) => {
-  const data = useStaticQuery(graphql`
-    {
-      fullSize: allFile(
-        filter: {
-          relativePath: {
-            regex: "/^trouble-with-500-rule/test-exposures/full-size/"
-          }
-        }
-      ) {
-        edges {
-          node {
-            name
-            childImageSharp {
-              fluid(maxWidth: 1000, quality: 100) {
-                ...GatsbyImageSharpFluid
-              }
-            }
-          }
-        }
-      }
-      centralCrop: allFile(
-        filter: {
-          relativePath: {
-            regex: "/^trouble-with-500-rule/test-exposures/central-crop/"
-          }
-        }
-      ) {
-        edges {
-          node {
-            name
-            childImageSharp {
-              fluid(maxWidth: 1000, quality: 100) {
-                ...GatsbyImageSharpFluid
-              }
-            }
-          }
-        }
-      }
-    }
-  `);
+  // // const data = useStaticQuery(graphql`
+  // //   {
+  // //     fullSize: allFile(
+  // //       filter: {
+  // //         relativePath: {
+  // //           regex: "/^trouble-with-500-rule/test-exposures/full-size/"
+  // //         }
+  // //       }
+  // //     ) {
+  // //       edges {
+  // //         node {
+  // //           name
+  // //           childImageSharp {
+  // //             fluid(maxWidth: 1000, quality: 100) {
+  // //               ...GatsbyImageSharpFluid
+  // //             }
+  // //           }
+  // //         }
+  // //       }
+  // //     }
+  // //     centralCrop: allFile(
+  // //       filter: {
+  // //         relativePath: {
+  // //           regex: "/^trouble-with-500-rule/test-exposures/central-crop/"
+  // //         }
+  // //       }
+  // //     ) {
+  // //       edges {
+  // //         node {
+  // //           name
+  // //           childImageSharp {
+  // //             fluid(maxWidth: 1000, quality: 100) {
+  // //               ...GatsbyImageSharpFluid
+  // //             }
+  // //           }
+  // //         }
+  // //       }
+  // //     }
+  // //   }
+  // // `);
 
-  useEffect(() => {
-    showIdx(currentCardIdx);
-    updateControlBlock();
-  });
+  // useEffect(() => {
+  //   showIdx(currentCardIdx);
+  //   updateControlBlock();
+  // });
 
-  testPoints.length = 0;
+  // testPoints.length = 0;
 
-  data.fullSize.edges.forEach(({ node }) => {
-    var timeStr, time;
+  // data.fullSize.edges.forEach(({ node }) => {
+  //   var timeStr, time;
 
-    const idxDot = node.name.indexOf('.');
-    timeStr = node.name.substring('500-rule-'.length, idxDot);
-    time = parseInt(timeStr.substring(0, timeStr.length - 1));
-    testPoints.push({
-      timeStr: timeStr,
-      time: time,
-      fullSizeName: node.name,
-      fullSizeFluid: node.childImageSharp.fluid,
-    });
-  });
+  //   const idxDot = node.name.indexOf('.');
+  //   timeStr = node.name.substring('500-rule-'.length, idxDot);
+  //   time = parseInt(timeStr.substring(0, timeStr.length - 1));
+  //   testPoints.push({
+  //     timeStr: timeStr,
+  //     time: time,
+  //     fullSizeName: node.name,
+  //     fullSizeFluid: node.childImageSharp.fluid,
+  //   });
+  // });
 
-  data.centralCrop.edges.forEach(({ node }) => {
-    var timeStr;
+  // data.centralCrop.edges.forEach(({ node }) => {
+  //   var timeStr;
 
-    const idxDot = node.name.indexOf('.');
-    timeStr = node.name.substring('500-rule-'.length, idxDot);
-    testPoints.forEach((testPoint) => {
-      if (testPoint.timeStr === timeStr) {
-        testPoint.centralCropName = node.name;
-        testPoint.centralCropFluid = node.childImageSharp.fluid;
-      }
-    });
-  });
+  //   const idxDot = node.name.indexOf('.');
+  //   timeStr = node.name.substring('500-rule-'.length, idxDot);
+  //   testPoints.forEach((testPoint) => {
+  //     if (testPoint.timeStr === timeStr) {
+  //       testPoint.centralCropName = node.name;
+  //       testPoint.centralCropFluid = node.childImageSharp.fluid;
+  //     }
+  //   });
+  // });
 
-  testPoints.sort((a, b) => {
-    return a.time - b.time;
-  });
+  // testPoints.sort((a, b) => {
+  //   return a.time - b.time;
+  // });
 
-  return (
-    <PhotoFlipper className={props.className}>
-      <PhotoStack>
-        {testPoints.map((testPoint, idx) => {
-          return (
-            <Card
-              id={'photo-flipper-card-' + idx}
-              key={'photo-flipper-card-' + idx}
-              className="photo-flipper-hidden"
-            >
-              <FullSizeImage fluid={testPoint.fullSizeFluid} />
-              <CentralCropImage fluid={testPoint.centralCropFluid} />
-            </Card>
-          );
-        })}
-        <ControlBlock id="photo-flipper-control-block">
-          <PreviousCardButton
-            id="photo-flipper-control-previous-button"
-            onClick={onPrevious}
-          >
-            ❮
-          </PreviousCardButton>
+  // return (
+  //   <PhotoFlipper className={props.className}>
+  //     <PhotoStack>
+  //       {testPoints.map((testPoint, idx) => {
+  //         return (
+  //           <Card
+  //             id={'photo-flipper-card-' + idx}
+  //             key={'photo-flipper-card-' + idx}
+  //             className="photo-flipper-hidden"
+  //           >
+  //             <FullSizeImage fluid={testPoint.fullSizeFluid} />
+  //             <CentralCropImage fluid={testPoint.centralCropFluid} />
+  //           </Card>
+  //         );
+  //       })}
+  //       <ControlBlock id="photo-flipper-control-block">
+  //         <PreviousCardButton
+  //           id="photo-flipper-control-previous-button"
+  //           onClick={onPrevious}
+  //         >
+  //           ❮
+  //         </PreviousCardButton>
 
-          <CurrentCardLabel id="photo-flipper-current-card-label" />
+  //         <CurrentCardLabel id="photo-flipper-current-card-label" />
 
-          <NextCardButton
-            id="photo-flipper-control-next-button"
-            onClick={onNext}
-          >
-            ❯
-          </NextCardButton>
-        </ControlBlock>
-      </PhotoStack>
-    </PhotoFlipper>
-  );
+  //         <NextCardButton
+  //           id="photo-flipper-control-next-button"
+  //           onClick={onNext}
+  //         >
+  //           ❯
+  //         </NextCardButton>
+  //       </ControlBlock>
+  //     </PhotoStack>
+  //   </PhotoFlipper>
+  // );
+  return <div>This would have been a photo flipper</div>;
 };
 
 export default TestPhotoFlipper;
