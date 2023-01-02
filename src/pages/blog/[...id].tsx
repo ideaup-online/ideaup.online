@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
 import Layout from '@/components/layout';
-import { getAllBlogIdData, getBlogPostData } from 'lib/blog';
-import { BlogPostData } from 'lib/blog-types';
+import {
+  getAllBlogIdData,
+  getAllSortedBlogHeadlineData,
+  getBlogPostData,
+} from 'lib/blog';
+import { BlogHeadlineData, BlogPostData } from 'lib/blog-types';
 import styled from '@emotion/styled';
 import IdeaUpElectronicsIcon from '@/components/icons/idea-up-electronics-icon';
 import IdeaUpAstronomyIcon from '@/components/icons/idea-up-astronomy-icon';
@@ -17,6 +21,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import path from 'path';
 import NoTrailCalculator from '@/components/no-trail-calculator';
 import TestPhotoFlipper from '@/components/blog/trouble-with-500-rule/test-photo-flipper';
+import Link from 'next/link';
 
 const StyledElectronicsIcon = styled(IdeaUpElectronicsIcon)`
   width: 5em;
@@ -354,8 +359,57 @@ export async function getStaticPaths() {
   };
 }
 
+type LinkInfo = {
+  id: string;
+  category: string;
+  title: string;
+};
+
 export async function getStaticProps({ params }: { params: { id: string[] } }) {
   const blogPostData = getBlogPostData(params.id[1]);
+  const blogHeadlineData = getAllSortedBlogHeadlineData();
+
+  let previous: LinkInfo | null = null;
+  let next: LinkInfo | null = null;
+
+  let prevData: BlogHeadlineData | null = null;
+  let didFindUs = false;
+  blogHeadlineData.every((data) => {
+    // Did we find us last time?
+    if (didFindUs) {
+      // Yes, previous gets whatever
+      // data is
+      previous = { id: data.id, category: data.category, title: data.title };
+
+      // And we get outta here
+      return false;
+    }
+
+    // Is this us?
+    if (data.id === params.id[1]) {
+      // Yes, next gets whatever
+      // prevData is
+      if (prevData) {
+        next = {
+          id: prevData?.id,
+          category: prevData.category,
+          title: prevData.title,
+        };
+      }
+
+      // Set didFindUs to set
+      // previous on the next
+      // time through
+      didFindUs = true;
+    }
+
+    // Remember the previous
+    // data
+    prevData = data;
+
+    // Keep going
+    return true;
+  });
 
   const mdxSource = await serialize(blogPostData.content, {
     // Optionally pass remark/rehype plugins
@@ -408,6 +462,8 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
   return {
     props: {
       blogPostData,
+      previous,
+      next,
       source: mdxSource,
     },
   };
@@ -422,9 +478,13 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
 
 export default function BlogPost({
   blogPostData,
+  previous,
+  next,
   source,
 }: {
   blogPostData: BlogPostData;
+  previous: LinkInfo | null;
+  next: LinkInfo | null;
   source: MDXRemoteSerializeResult<Record<string, unknown>>;
 }): JSX.Element {
   useEffect(() => {
@@ -588,18 +648,16 @@ export default function BlogPost({
                 <PageTOC
                   up={{ target: '/', text: 'Back to List' }}
                   previous={
-                    null
-                    // previous && {
-                    //   target: previous.fields.slug,
-                    //   text: previous.frontmatter.title,
-                    // }
+                    previous && {
+                      target: `/blog/${previous.category}/${previous.id}`,
+                      text: previous.title,
+                    }
                   }
                   next={
-                    null
-                    // next && {
-                    //   target: next.fields.slug,
-                    //   text: next.frontmatter.title,
-                    // }
+                    next && {
+                      target: `/blog/${next.category}/${next.id}`,
+                      text: next.title,
+                    }
                   }
                 />
               </NavWrapper>
@@ -611,24 +669,21 @@ export default function BlogPost({
           <nav>
             <NavContainer>
               <NavPrevious>
-                {
-                  null
-                  // previous && (
-                  //   <Link href={previous.fields.slug} rel="prev">
-                  //     ← {String(smartquotes(previous.frontmatter.title))}
-                  //   </Link>
-                  // )
-                }
+                {previous && (
+                  <Link
+                    href={`/blog/${previous.category}/${previous.id}`}
+                    rel="prev"
+                  >
+                    ← {String(smartquotes(previous.title))}
+                  </Link>
+                )}
               </NavPrevious>
               <NavNext>
-                {
-                  null
-                  // next && (
-                  //   <Link href={next.fields.slug} rel="next">
-                  //     {String(smartquotes(next.frontmatter.title))} →
-                  //   </Link>
-                  // )
-                }
+                {next && (
+                  <Link href={`/blog/${next.category}/${next.id}`} rel="next">
+                    {String(smartquotes(next.title))} →
+                  </Link>
+                )}
               </NavNext>
             </NavContainer>
           </nav>
