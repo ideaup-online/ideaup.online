@@ -19,7 +19,7 @@ const FootieContent = styled.div`
   padding: 0.25em;
 `;
 
-const LayoutFooter = () => {
+const LayoutFooter = (): JSX.Element => {
   const year = new Date().getFullYear();
 
   return (

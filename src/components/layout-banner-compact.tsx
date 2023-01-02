@@ -31,7 +31,7 @@ const TextLogo = styled(IdeaUpTextLogo)`
   }
 `;
 
-const LayoutBannerCompact = () => {
+const LayoutBannerCompact = (): JSX.Element => {
   return (
     <Banner>
       <Link href="/">

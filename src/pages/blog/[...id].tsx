@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import Script from 'next/script';
+import { useEffect } from 'react';
 import Layout from '@/components/layout';
 import { getAllBlogIdData, getBlogPostData } from 'lib/blog';
 import { BlogPostData } from 'lib/blog-types';
@@ -12,7 +10,6 @@ import PageTOC from '@/components/page-toc';
 import smartquotes from 'smartquotes-ts';
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
-import dynamic from 'next/dynamic';
 import { format } from 'date-fns';
 import remarkSmartypants from '@silvenon/remark-smartypants';
 import rehypeSlug from 'rehype-slug';

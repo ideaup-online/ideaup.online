@@ -59,12 +59,12 @@ const SmallText = styled.div`
   font-size: 1.3em;
 `;
 
-const LayoutBannerFull = () => {
+const LayoutBannerFull = (): JSX.Element => {
   useEffect(() => {
     const rays = document.getElementsByClassName('idea-up-site-icon-rays');
 
-    Array.from(rays).forEach((ray, idx) => {
-      ray.style.stroke = 'var(--accent-color)';
+    Array.from(rays).forEach((ray) => {
+      (ray as HTMLElement).style.stroke = 'var(--accent-color)';
     });
   }, []);
   return (
