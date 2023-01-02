@@ -15,7 +15,7 @@ const TOCWrapper = styled.div`
     display: initial;
   }
   .toc-text-highlight {
-    color: coral;
+    color: var(--base-color);
     font-weight: 400;
   }
 `;
@@ -50,7 +50,7 @@ const TOCBullet = styled.canvas`
 `;
 
 const ArticleRef = styled.p`
-  color: coral;
+  color: var(--base-color);
   font-size: 0.8em;
   padding-left: 0.5em;
   padding-right: 0.5em;
@@ -65,6 +65,25 @@ const TOCSpacer = styled.div`
 const OffPageText = styled.p`
   font-weight: 400;
   margin: auto;
+`;
+
+const BulletColorSource = styled.div`
+  width: 0;
+  height: 0;
+  color: var(--accent-color);
+`;
+
+const BulletLineColorSource = styled.div`
+  width: 0;
+  height: 0;
+  color: var(--toc-line-color);
+  opacity: 50%;
+`;
+
+const BulletHighlightColorSource = styled.div`
+  width: 0;
+  height: 0;
+  color: var(--base-color);
 `;
 
 type BezierPoint = {
@@ -212,6 +231,33 @@ const PageTOC = (props: any) => {
     // Off-page nav
     //
 
+    // Fetch colors
+    let bulletColor = 'rgb(160, 160, 160)';
+    let bulletLineColor = 'rgb(64, 64, 64)';
+    let bulletHighlightColor = 'coral';
+    const bulletColorSource = document.getElementById('bullet-color-source');
+    if (bulletColorSource) {
+      const elementStyle = window.getComputedStyle(bulletColorSource, null);
+      bulletColor = elementStyle.getPropertyValue('color');
+    }
+    const bulletLineColorSource = document.getElementById(
+      'bullet-line-color-source',
+    );
+    if (bulletLineColorSource) {
+      const elementStyle = window.getComputedStyle(bulletLineColorSource, null);
+      bulletLineColor = elementStyle.getPropertyValue('color');
+    }
+    const bulletHighlightColorSource = document.getElementById(
+      'bullet-highlight-color-source',
+    );
+    if (bulletHighlightColorSource) {
+      const elementStyle = window.getComputedStyle(
+        bulletHighlightColorSource,
+        null,
+      );
+      bulletHighlightColor = elementStyle.getPropertyValue('color');
+    }
+
     // Up
     let canvas = document.querySelector(
       '#toc-bullet-props-up',
@@ -240,7 +286,7 @@ const PageTOC = (props: any) => {
         // Draw arrow points, scaling/translating
         // as we go
         ctx.beginPath();
-        ctx.strokeStyle = 'rgb(120,120,120)';
+        ctx.strokeStyle = bulletColor;
         ctx.lineWidth = 1.5;
         arrowPts.forEach((point) => {
           if ('m' === point.type) {
@@ -293,7 +339,7 @@ const PageTOC = (props: any) => {
         // Draw arrow points, scaling/translating
         // (and rotating!) as we go
         ctx.beginPath();
-        ctx.strokeStyle = 'rgb(120,120,120)';
+        ctx.strokeStyle = bulletColor;
         ctx.lineWidth = 1.5;
         arrowPts.forEach((point) => {
           if ('m' === point.type) {
@@ -346,7 +392,7 @@ const PageTOC = (props: any) => {
         // Draw arrow points, scaling/translating
         // (and rotating and reflecting!) as we go
         ctx.beginPath();
-        ctx.strokeStyle = 'rgb(120,120,120)';
+        ctx.strokeStyle = bulletColor;
         ctx.lineWidth = 1.5;
         arrowPts.forEach((point) => {
           if ('m' === point.type) {
@@ -422,7 +468,7 @@ const PageTOC = (props: any) => {
         if (ctx) {
           // Draw link(s) to neighbor(s)
           ctx.beginPath();
-          ctx.strokeStyle = 'rgb(64,64,64)';
+          ctx.strokeStyle = bulletLineColor;
           ctx.lineWidth = 1;
           if (hasTopLine) {
             ctx.moveTo(centerX, 0);
@@ -436,7 +482,7 @@ const PageTOC = (props: any) => {
 
           // Draw circle
           ctx.beginPath();
-          ctx.strokeStyle = 'rgb(96,96,96)';
+          ctx.strokeStyle = bulletColor;
           ctx.lineWidth = 1.5;
           ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
           ctx.stroke();
@@ -444,7 +490,7 @@ const PageTOC = (props: any) => {
           // Fill link in if this is the current item
           if (idx === currentItemIdx) {
             ctx.beginPath();
-            ctx.fillStyle = 'coral';
+            ctx.fillStyle = bulletHighlightColor;
             ctx.arc(centerX, centerY, fillRadius, 0, 2 * Math.PI);
             ctx.fill();
           }
@@ -527,14 +573,15 @@ const PageTOC = (props: any) => {
     }
   }, [items]);
 
+  // Runs once to build list of TOC
+  // entries
   useEffect(() => {
     // Finds all heading elements spit out by the MDX
     // parser
     const anchors = document.getElementsByClassName('anchor');
 
-    // Some vars
-    let i,
-      levelInd = 'l1';
+    // An array to store info about
+    // each entry in the TOC
     const newItems = [] as ItemData[];
 
     // Add the first element to the TOC, the top!
@@ -551,7 +598,8 @@ const PageTOC = (props: any) => {
     // Iterate the headings from MDX and create
     // the remaining elements of the TOC by
     // scraping their contents
-    for (i = 0; i < anchors.length; i++) {
+    let levelInd = 'l1';
+    for (let i = 0; i < anchors.length; i++) {
       const parent = anchors[i].parentElement as HTMLElement;
       if (parent && parent.tagName.startsWith('H')) {
         const level = parent.tagName.substring(1);
@@ -570,14 +618,8 @@ const PageTOC = (props: any) => {
       }
     }
 
-    // Hook up our event handler to onscroll
-    // and window resize. Only when one
-    // of these events fires can the
-    // highlighted TOC item be changed
-    document.body.onscroll = onBodyScroll;
-    window.onresize = onBodyScroll;
-
-    // Change our state so we get redrawn
+    // Update state only if the
+    // list of items has changed
     setItems((items) => {
       if (!isEqual(items, newItems)) {
         return newItems;
@@ -585,6 +627,20 @@ const PageTOC = (props: any) => {
         return items;
       }
     });
+  }, []);
+
+  // Runs whenever onBodyScroll is
+  // changed. Hooks in to events that
+  // can change the scroll position
+  // (and thus which entry needs to
+  // be highlighted)
+  useEffect(() => {
+    // Hook up our event handler to onscroll
+    // and window resize. Only when one
+    // of these events fires can the
+    // highlighted TOC item be changed
+    document.body.onscroll = onBodyScroll;
+    window.onresize = onBodyScroll;
 
     return () => {
       // Be a good citizen and clean up
@@ -593,12 +649,26 @@ const PageTOC = (props: any) => {
     };
   }, [onBodyScroll]);
 
+  // Runs whenever the list of TOC
+  // entries changes (or if
+  // onBodyScroll changes, but it's
+  // mainly about the entries).
+  // Calls onBodyScroll to calculate
+  // the initial current item index
+  // (the entry to be highlighted)
   useEffect(() => {
     if (items.length !== 0) {
       onBodyScroll();
     }
   }, [items, onBodyScroll]);
 
+  // Runs whenever the current item
+  // changes (or if updateGraphics
+  // changes, but it's mainly about
+  // the current item). Calls
+  // updateGraphics to move the
+  // highlight to the newly selected
+  // item
   useEffect(() => {
     updateGraphics();
   }, [currentItemIdx, updateGraphics]);
@@ -808,6 +878,9 @@ const PageTOC = (props: any) => {
           </TOCTextL1>
         </React.Fragment>
       )}
+      <BulletColorSource id="bullet-color-source" />
+      <BulletLineColorSource id="bullet-line-color-source" />
+      <BulletHighlightColorSource id="bullet-highlight-color-source" />
     </TOCWrapper>
   );
 };
