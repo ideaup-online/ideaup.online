@@ -14,7 +14,8 @@ import {
 const Container = styled.div`
   display: grid;
   padding: 1em;
-  background: #202020;
+  background: var(--default-bg-color);
+  box-shadow: 0 0 0.3rem var(--base-color);
   border-radius: 0.5em;
 `;
 
@@ -31,7 +32,7 @@ const RightColumn = styled.div`
 `;
 
 const ColumnHeading = styled.div`
-  color: coral;
+  color: var(--base-color);
   text-align: center;
   padding-top: 0.5em;
 `;

@@ -7,6 +7,13 @@
   --text-color-dim: #ffe7d5bf;
   --heading-link-icon-color: #00a993a0;
   --toc-line-color: #ffe7d560;
+  --enabled-field-bg-color: #afa39d;
+  --enabled-field-fg-color: #271f1b;
+  --disabled-field-bg-color: #625650;
+  --disabled-field-fg-color: #0e0d0b;
+  --fancy-field-dark-color: #3c302a;
+  --field-selected-item-bg-color: #008573;
+  --field-selected-item-fg-color: #ffe7d5;
 }
 
 * {
@@ -26,7 +33,7 @@ a {
   text-shadow: none;
   background-image: none;
   text-decoration: none;
-  color: inherit;
+  color: var(--accent-color);
 }
 
 .curtain {

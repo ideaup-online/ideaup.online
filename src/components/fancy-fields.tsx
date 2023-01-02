@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
+import smartquotes from 'smartquotes-ts';
 
 //
 // Field Control Group styles
@@ -52,8 +53,8 @@ const FieldControl = styled.input`
   padding-left: 1em;
   padding-right: 0.25em;
   font-size: 0.9em;
-  background: #a0a0a0;
-  color: #404040;
+  background: var(--enabled-field-bg-color);
+  color: var(--enabled-field-fg-color);
   font-family: Solway, san-serif;
   width: 100%;
   box-sizing: border-box;
@@ -61,8 +62,8 @@ const FieldControl = styled.input`
 `;
 
 const FieldControlRO = styled(FieldControl)`
-  background: #686868;
-  color: #282828;
+  background: var(--disabled-field-bg-color);
+  color: var(--disabled-field-fg-color);
 `;
 
 const FieldRightDecoratedControl = styled(FieldControl)`
@@ -71,8 +72,8 @@ const FieldRightDecoratedControl = styled(FieldControl)`
 `;
 
 const FieldRightDecoratedControlRO = styled(FieldRightDecoratedControl)`
-  background: #686868;
-  color: #282828;
+  background: var(--disabled-field-bg-color);
+  color: var(--disabled-field-fg-color);
 `;
 
 const FieldLeftDecoratedControl = styled(FieldControl)`
@@ -85,8 +86,8 @@ const FieldLeftDecoratedControlC2 = styled(FieldLeftDecoratedControl)`
 `;
 
 const FieldLeftDecoratedControlRO = styled(FieldLeftDecoratedControl)`
-  background: #686868;
-  color: #282828;
+  background: var(--disabled-field-bg-color);
+  color: var(--disabled-field-fg-color);
 `;
 
 const FieldLeftDecoratedControlROC2 = styled(FieldLeftDecoratedControlRO)`
@@ -102,8 +103,8 @@ const FieldDoubleDecoratedControlC2 = styled(FieldDoubleDecoratedControl)`
 `;
 
 const FieldDoubleDecoratedControlRO = styled(FieldDoubleDecoratedControl)`
-  background: #686868;
-  color: #282828;
+  background: var(--disabled-field-bg-color);
+  color: var(--disabled-field-fg-color);
 `;
 
 const FieldDoubleDecoratedControlROC2 = styled(FieldDoubleDecoratedControlRO)`
@@ -121,8 +122,8 @@ const FieldMiddleDecorator = styled.div`
   justify-items: center;
   white-space: nowrap;
   vertical-align: middle;
-  color: rgba(255, 127, 80, 0.8);
-  background: #404040;
+  color: var(--base-color);
+  background: var(--fancy-field-dark-color);
   padding-left: 0.5em;
   padding-right: 0.5em;
   font-family: Solway, san-serif;
@@ -153,8 +154,8 @@ const FieldLabel = styled.span`
   vertical-align: middle;
   padding: 0.25em;
   padding-left: 0.5em;
-  color: coral;
-  background: #404040;
+  color: var(--base-color);
+  background: var(--fancy-field-dark-color);
   border-top-left-radius: 0.4em;
   border-top-right-radius: 0.4em;
   border-bottom: solid 1px;
@@ -197,7 +198,7 @@ const NakedField = (props: any): JSX.Element => {
     }
     return (
       <FieldContainer className={props.className}>
-        <FieldLabel>{props.label}</FieldLabel>
+        <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
         <Group>
           <Control
             id={props.inputProps.id}
@@ -208,7 +209,7 @@ const NakedField = (props: any): JSX.Element => {
             onChange={props.inputProps.onChange}
             readOnly={isReadOnly}
           />
-          <Decorator>{props.decorator}</Decorator>
+          <Decorator>{String(smartquotes(props.decorator))}</Decorator>
         </Group>
       </FieldContainer>
     );
@@ -220,7 +221,7 @@ const NakedField = (props: any): JSX.Element => {
     }
     return (
       <FieldContainer className={props.className}>
-        <FieldLabel>{props.label}</FieldLabel>
+        <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
         <FieldControlGroup>
           <Control
             id={props.inputProps.id}
@@ -291,7 +292,7 @@ const NakedDoubleField = (props: any): JSX.Element => {
     }
     return (
       <FieldContainer className={props.className}>
-        <FieldLabel>{props.label}</FieldLabel>
+        <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
         <Group>
           <Control1
             id={props.inputPropsLeft.id}
@@ -302,7 +303,9 @@ const NakedDoubleField = (props: any): JSX.Element => {
             onChange={props.inputPropsLeft.onChange}
             readOnly={isLeftReadOnly}
           />
-          <FieldMiddleDecorator>{props.middleDecorator}</FieldMiddleDecorator>
+          <FieldMiddleDecorator>
+            {String(smartquotes(props.middleDecorator))}
+          </FieldMiddleDecorator>
           <Control2
             id={props.inputPropsRight.id}
             type={props.inputPropsRight.type}
@@ -312,7 +315,7 @@ const NakedDoubleField = (props: any): JSX.Element => {
             onChange={props.inputPropsRight.onChange}
             readOnly={isRightReadOnly}
           />
-          <Decorator>{props.decorator}</Decorator>
+          <Decorator>{String(smartquotes(props.decorator))}</Decorator>
         </Group>
       </FieldContainer>
     );
@@ -327,7 +330,7 @@ const NakedDoubleField = (props: any): JSX.Element => {
     }
     return (
       <FieldContainer className={props.className}>
-        <FieldLabel>{props.label}</FieldLabel>
+        <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
         <FieldDoubleControlGroup>
           <Control1
             id={props.inputPropsLeft.id}
@@ -338,7 +341,9 @@ const NakedDoubleField = (props: any): JSX.Element => {
             onChange={props.inputPropsLeft.onChange}
             readOnly={isLeftReadOnly}
           />
-          <FieldMiddleDecorator>{props.middleDecorator}</FieldMiddleDecorator>
+          <FieldMiddleDecorator>
+            {String(smartquotes(props.middleDecorator))}
+          </FieldMiddleDecorator>
           <Control2
             id={props.inputPropsRight.id}
             type={props.inputPropsRight.type}
@@ -376,8 +381,8 @@ const CustomSelect = styled.div`
   border-bottom-left-radius: 0.4em;
   border-bottom-right-radius: 0;
   font-size: 0.9em;
-  background: #a0a0a0;
-  color: #404040;
+  background: var(--enabled-field-bg-color);
+  color: var(--fancy-field-dark-color);
   font-family: Solway, san-serif;
   cursor: pointer;
 
@@ -395,7 +400,7 @@ const CustomSelect = styled.div`
     width: 100%;
     box-sizing: border-box;
     text-align: center;
-    color: #404040;
+    color: var(--fancy-field-dark-color);
     font-family: Solway, san-serif;
     border: 1px solid transparent;
     border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
@@ -403,7 +408,8 @@ const CustomSelect = styled.div`
   }
 
   .same-as-selected {
-    background: #909090;
+    background: var(--field-selected-item-bg-color);
+    color: var(--field-selected-item-fg-color);
   }
 
   .select-items {
@@ -412,7 +418,7 @@ const CustomSelect = styled.div`
     left: 0;
     right: 0;
     z-index: 99;
-    background: #a0a0a0;
+    background: var(--enabled-field-bg-color);
     border-bottom-left-radius: 0.4em;
     border-bottom-right-radius: 0.4em;
   }
@@ -559,7 +565,7 @@ const NakedDropDownSelectField = (props: any): JSX.Element => {
 
   return (
     <FieldContainer className={props.className}>
-      <FieldLabel>{props.label}</FieldLabel>
+      <FieldLabel>{String(smartquotes(props.label))}</FieldLabel>
       <Group>
         <CustomSelect id={props.inputProps.id + '-custom-select'}>
           <select
@@ -598,10 +604,8 @@ export const Button = styled.button`
   -webkit-appearance: none;
   background-color: initial;
   border: none;
-  color: #787878;
   cursor: pointer;
   outline: none;
-
   display: grid;
   align-items: center;
   justify-self: stretch;
@@ -611,8 +615,8 @@ export const Button = styled.button`
   padding: 0.25em;
   padding-left: 0.5em;
   padding-right: 0.5em;
-  color: coral;
-  background: #404040;
+  color: var(--base-color);
+  background: var(--fancy-field-dark-color);
   border-radius: 0.4em;
 
   font-family: inherit;
