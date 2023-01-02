@@ -525,7 +525,7 @@ const PageTOC = (props: any) => {
         return lastAboveIdx;
       });
     }
-  }, [items, currentItemIdx]);
+  }, [items]);
 
   useEffect(() => {
     // Finds all heading elements spit out by the MDX

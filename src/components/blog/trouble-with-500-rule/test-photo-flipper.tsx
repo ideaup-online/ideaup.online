@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 // import { useStaticQuery, graphql } from 'gatsby';
 import styled from '@emotion/styled';
+import { redirect } from 'next/dist/server/api-utils';
 // import Img from 'gatsby-image';
 
 const PhotoFlipper = styled.div``;
@@ -87,19 +88,19 @@ const NextCardButton = styled(CardNavButton)`
   grid-column: 3 / auto;
 `;
 
-var testPoints = [],
-  currentCardIdx = 0;
+const testPoints: any[] = [];
+let currentCardIdx = 0;
 
-function showIdx(idx) {
+function showIdx(idx: number) {
   const element = document.getElementById('photo-flipper-card-' + idx);
-  element.classList.remove('photo-flipper-hidden');
-  element.classList.add('photo-flipper-visible');
+  element?.classList.remove('photo-flipper-hidden');
+  element?.classList.add('photo-flipper-visible');
 }
 
-function hideIdx(idx) {
+function hideIdx(idx: number) {
   const element = document.getElementById('photo-flipper-card-' + idx);
-  element.classList.remove('photo-flipper-visible');
-  element.classList.add('photo-flipper-hidden');
+  element?.classList.remove('photo-flipper-visible');
+  element?.classList.add('photo-flipper-hidden');
 }
 
 function updateControlBlock() {
@@ -112,21 +113,21 @@ function updateControlBlock() {
     if (currentCardIdx === 0) {
       document
         .getElementById('photo-flipper-control-previous-button')
-        .classList.add('photo-flipper-invisible');
+        ?.classList.add('photo-flipper-invisible');
     } else {
       document
         .getElementById('photo-flipper-control-previous-button')
-        .classList.remove('photo-flipper-invisible');
+        ?.classList.remove('photo-flipper-invisible');
     }
 
     if (currentCardIdx === testPoints.length - 1) {
       document
         .getElementById('photo-flipper-control-next-button')
-        .classList.add('photo-flipper-invisible');
+        ?.classList.add('photo-flipper-invisible');
     } else {
       document
         .getElementById('photo-flipper-control-next-button')
-        .classList.remove('photo-flipper-invisible');
+        ?.classList.remove('photo-flipper-invisible');
     }
   } else {
     // Could't grab the current card label from the dom;
@@ -135,7 +136,7 @@ function updateControlBlock() {
   }
 }
 
-function onPrevious(e) {
+function onPrevious() {
   const oldIdx = currentCardIdx;
 
   if (currentCardIdx > 0) {
@@ -147,7 +148,7 @@ function onPrevious(e) {
   }
 }
 
-function onNext(e) {
+function onNext() {
   const oldIdx = currentCardIdx;
 
   if (currentCardIdx < testPoints.length - 1) {
@@ -159,7 +160,7 @@ function onNext(e) {
   }
 }
 
-const TestPhotoFlipper = (props) => {
+const TestPhotoFlipper = (props: any): JSX.Element => {
   // // const data = useStaticQuery(graphql`
   // //   {
   // //     fullSize: allFile(
@@ -274,7 +275,17 @@ const TestPhotoFlipper = (props) => {
   //     </PhotoStack>
   //   </PhotoFlipper>
   // );
-  return <div>This would have been a photo flipper</div>;
+
+  const RedOnWhite = styled.div`
+    color: firebrick;
+    background-color: white;
+    text-align: center;
+    padding: 0.2rem;
+    border-radius: 0.25rem;
+    font-weight: 400;
+  `;
+
+  return <RedOnWhite>This would have been a photo flipper</RedOnWhite>;
 };
 
 export default TestPhotoFlipper;

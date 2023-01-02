@@ -172,11 +172,11 @@ const FieldContainer = styled.div``;
 // style
 //
 
-const NakedField = (props) => {
+const NakedField = (props: any): JSX.Element => {
   const isReadOnly =
     props.inputProps.readOnly !== null ? props.inputProps.readOnly : false;
 
-  var Group, Control, Decorator;
+  let Group, Control, Decorator;
   if (props.decorator) {
     if (props.decoratorPosition && props.decoratorPosition === 'left') {
       Group = FieldLeftDecoratedControlGroup;
@@ -250,7 +250,7 @@ export const Field = styled(NakedField)`
 // style
 //
 
-const NakedDoubleField = (props) => {
+const NakedDoubleField = (props: any): JSX.Element => {
   const isLeftReadOnly =
     props.inputPropsLeft.readOnly !== null
       ? props.inputPropsLeft.readOnly
@@ -260,7 +260,7 @@ const NakedDoubleField = (props) => {
       ? props.inputPropsRight.readOnly
       : false;
 
-  var Group, Control1, Control2, Decorator;
+  let Group, Control1, Control2, Decorator;
   if (props.decorator) {
     if (props.decoratorPosition && props.decoratorPosition === 'left') {
       Group = FieldDoubleLeftDecoratedControlGroup;
@@ -426,7 +426,7 @@ const DropArrow = styled(FieldRightDecorator)`
   cursor: pointer;
 `;
 
-const NakedDropDownSelectField = (props) => {
+const NakedDropDownSelectField = (props: any): JSX.Element => {
   const Group = FieldRightDecoratedControlGroup;
 
   function close() {
@@ -447,7 +447,7 @@ const NakedDropDownSelectField = (props) => {
     }
   }
 
-  function toggleOpen(e) {
+  function toggleOpen(e: MouseEvent) {
     // When the select box is clicked,
     // toggle its open state
     e.stopPropagation();
@@ -478,58 +478,65 @@ const NakedDropDownSelectField = (props) => {
   }
 
   useEffect(() => {
-    var customSelect, j, selectElement, selectedItem, optionList, optionItem;
-
     // Grab our custom select element
-    customSelect = document.getElementById(
+    const customSelect = document.getElementById(
       props.inputProps.id + '-custom-select',
     );
     if (customSelect) {
       // Grab the child select element
-      selectElement = customSelect.getElementsByTagName('select')[0];
+      const selectElement = customSelect.getElementsByTagName('select')[0];
 
       // Create a new DIV that will act as the selected item
-      selectedItem = document.createElement('DIV');
+      const selectedItem = document.createElement('DIV');
       selectedItem.setAttribute('class', 'current-select-item');
       selectedItem.innerHTML =
         selectElement.options[selectElement.selectedIndex].innerHTML;
       customSelect.appendChild(selectedItem);
 
       // Create a new DIV that will contain the option list
-      optionList = document.createElement('DIV');
+      const optionList = document.createElement('DIV');
       optionList.setAttribute('id', props.inputProps.id + '-option-list');
       optionList.setAttribute('class', 'select-items select-hide');
-      for (j = 0; j < selectElement.length; j++) {
+      for (let j = 0; j < selectElement.length; j++) {
         // For each option in the original select element,
         // create a new DIV that will act as an option item
-        optionItem = document.createElement('DIV');
+        const optionItem = document.createElement('DIV');
         if (j === selectElement.selectedIndex) {
           optionItem.setAttribute('class', 'select-item same-as-selected');
         } else {
           optionItem.setAttribute('class', 'select-item');
         }
         optionItem.innerHTML = selectElement.options[j].innerHTML;
-        optionItem.addEventListener('click', function (e) {
+        optionItem.addEventListener('click', function (e: MouseEvent) {
           // When an item is clicked, update the original select box
           // and selected item
-          var previouslySelectedItems, i, k, selectElement, selectedItem;
-          selectElement =
-            this.parentNode.parentNode.getElementsByTagName('select')[0];
-          selectedItem = this.parentNode.previousSibling;
-          for (i = 0; i < selectElement.length; i++) {
-            if (selectElement.options[i].innerHTML === this.innerHTML) {
-              if (selectElement.selectedIndex !== i) {
-                selectElement.selectedIndex = i;
-                props.inputProps.onChange();
+          const target = e.target as HTMLElement;
+          if (target) {
+            let previouslySelectedItems, i, k;
+            const selectElement = (
+              target.parentNode?.parentNode as HTMLElement
+            )?.getElementsByTagName('select')[0];
+            const selectedItem = target.parentNode?.previousSibling;
+            for (i = 0; i < selectElement.length; i++) {
+              if (selectElement.options[i].innerHTML === this.innerHTML) {
+                if (selectElement.selectedIndex !== i) {
+                  selectElement.selectedIndex = i;
+                  props.inputProps.onChange();
+                }
+                if (selectedItem) {
+                  (selectedItem as HTMLElement).innerHTML = this.innerHTML;
+                }
+                previouslySelectedItems = (
+                  target.parentNode as HTMLElement
+                )?.getElementsByClassName('same-as-selected');
+                for (k = 0; k < previouslySelectedItems.length; k++) {
+                  previouslySelectedItems[k].classList.remove(
+                    'same-as-selected',
+                  );
+                }
+                target.classList.add('same-as-selected');
+                break;
               }
-              selectedItem.innerHTML = this.innerHTML;
-              previouslySelectedItems =
-                this.parentNode.getElementsByClassName('same-as-selected');
-              for (k = 0; k < previouslySelectedItems.length; k++) {
-                previouslySelectedItems[k].classList.remove('same-as-selected');
-              }
-              this.classList.add('same-as-selected');
-              break;
             }
           }
         });
@@ -543,7 +550,7 @@ const NakedDropDownSelectField = (props) => {
     // clicked also
     document
       .getElementById(props.inputProps.id + '-decorator')
-      .addEventListener('click', toggleOpen);
+      ?.addEventListener('click', toggleOpen);
 
     // If the user clicks anywhere outside the select box,
     // then close it
@@ -560,21 +567,14 @@ const NakedDropDownSelectField = (props) => {
             onFocus={props.inputProps.onFocus}
             onBlur={props.inputProps.onBlur}
             onChange={props.inputProps.onChange}
+            value={props.inputProps.items[0]}
           >
-            {props.inputProps.items.map((item, idx) => {
-              if (idx === 0) {
-                return (
-                  <option selected="selected" value={idx} key={idx}>
-                    {item}
-                  </option>
-                );
-              } else {
-                return (
-                  <option value={idx} key={idx}>
-                    {item}
-                  </option>
-                );
-              }
+            {props.inputProps.items.map((item: any, idx: number) => {
+              return (
+                <option value={idx} key={idx}>
+                  {item}
+                </option>
+              );
             })}
           </select>
         </CustomSelect>
