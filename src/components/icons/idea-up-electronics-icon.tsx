@@ -33,18 +33,16 @@ const StyledSvg = styled(SvgInline)`
   }
 `;
 
-class IdeaUpElectronicsIcon extends React.Component {
-  render() {
-    return (
-      <StyledSvg
-        className={this.props.className}
-        id={this.props.id}
-        component={toReactComponent(
-          '../../../content/assets/icons/electronics-category-icon.svg',
-        )}
-      />
-    );
-  }
-}
+const IdeaUpElectronicsIcon = (props: any): JSX.Element => {
+  return (
+    <StyledSvg
+      className={props.className}
+      id={props.id}
+      component={toReactComponent(
+        '../../../content/assets/icons/electronics-category-icon.svg',
+      )}
+    />
+  );
+};
 
 export default IdeaUpElectronicsIcon;

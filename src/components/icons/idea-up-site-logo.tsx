@@ -40,18 +40,16 @@ const StyledSvg = styled(SvgInline)`
   }
 `;
 
-class IdeaUpSiteLogo extends React.Component {
-  render() {
-    return (
-      <StyledSvg
-        className={this.props.className}
-        id={this.props.id}
-        component={toReactComponent(
-          '../../../content/assets/icons/site-logo.svg',
-        )}
-      />
-    );
-  }
-}
+const IdeaUpSiteLogo = (props: any): JSX.Element => {
+  return (
+    <StyledSvg
+      className={props.className}
+      id={props.id}
+      component={toReactComponent(
+        '../../../content/assets/icons/site-logo.svg',
+      )}
+    />
+  );
+};
 
 export default IdeaUpSiteLogo;

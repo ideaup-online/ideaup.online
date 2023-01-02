@@ -12,7 +12,7 @@ const StyledSvg = styled(SvgInline)`
   }
 `;
 
-const IdeaUpTextLogo = (props) => {
+const IdeaUpTextLogo = (props: any): JSX.Element => {
   return (
     <StyledSvg
       id={props.id}

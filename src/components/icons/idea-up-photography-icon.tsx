@@ -4,28 +4,28 @@ import toReactComponent from 'svgr.macro';
 import SvgInline from '../svg-inline';
 
 const StyledSvg = styled(SvgInline)`
-  .idea-up-astronomy-icon-tripod {
+  .idea-up-photography-icon-camera-body {
     fill: none;
     stroke: coral;
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 24px;
   }
-  .idea-up-astronomy-icon-telescope {
+  .idea-up-photography-icon-lens {
     fill: none;
     stroke: coral;
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-width: 18px;
+    stroke-width: 20px;
   }
-  .idea-up-astronomy-icon-shine {
+  .idea-up-photography-icon-shine {
     fill: none;
-    stroke: #000;
+    stroke: coral;
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 12px;
   }
-  .idea-up-astronomy-border-circle {
+  .idea-up-photography-border-circle {
     fill: none;
     stroke: coral;
     stroke-miterlimit: 10;
@@ -33,18 +33,16 @@ const StyledSvg = styled(SvgInline)`
   }
 `;
 
-class IdeaUpAstronomyIcon extends React.Component {
-  render() {
-    return (
-      <StyledSvg
-        className={this.props.className}
-        id={this.props.id}
-        component={toReactComponent(
-          '../../../content/assets/icons/astronomy-category-icon.svg',
-        )}
-      />
-    );
-  }
-}
+const IdeaUpPhotographyIcon = (props: any): JSX.Element => {
+  return (
+    <StyledSvg
+      className={props.className}
+      id={props.id}
+      component={toReactComponent(
+        '../../../content/assets/icons/photography-category-icon.svg',
+      )}
+    />
+  );
+};
 
-export default IdeaUpAstronomyIcon;
+export default IdeaUpPhotographyIcon;

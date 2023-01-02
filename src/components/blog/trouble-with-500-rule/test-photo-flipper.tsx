@@ -285,7 +285,9 @@ const TestPhotoFlipper = (props: any): JSX.Element => {
     font-weight: 400;
   `;
 
-  return <RedOnWhite>This would have been a photo flipper</RedOnWhite>;
+  return (
+    <RedOnWhite>This will be a test photo flipper again one day</RedOnWhite>
+  );
 };
 
 export default TestPhotoFlipper;
