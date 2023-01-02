@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 const TOCWrapper = styled.div`
-  color: rgb(160, 160, 160);
+  color: var(--text-color-dim);
   display: grid;
   grid-template-columns: auto 0.2em auto;
   grid-column-gap: 0.5em;
@@ -23,6 +23,9 @@ const TOCTextL1 = styled.div`
   padding-top: 0.25em;
   padding-bottom: 0.25em;
   cursor: pointer;
+  &:hover:not(.toc-text-highlight) {
+    color: var(--accent-color);
+  }
 `;
 
 const TOCTextL2 = styled.div`
@@ -31,6 +34,9 @@ const TOCTextL2 = styled.div`
   padding-bottom: 0.125em;
   font-size: 0.8em;
   cursor: pointer;
+  &:hover:not(.toc-text-highlight) {
+    color: var(--accent-color);
+  }
 `;
 
 const TOCBullet = styled.canvas`

@@ -13,7 +13,6 @@ const Footie = styled.div`
 
 const FootieContent = styled.div`
   order: 1;
-  color: rgb(120, 120, 120);
   font-size: 0.75em;
   max-width: 50vw;
   text-align: center;
