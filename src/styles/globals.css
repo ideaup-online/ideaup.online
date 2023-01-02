@@ -33,7 +33,7 @@ a {
   text-shadow: none;
   background-image: none;
   text-decoration: none;
-  color: var(--accent-color);
+  color: inherit;
 }
 
 .curtain {
