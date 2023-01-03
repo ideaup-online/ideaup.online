@@ -22,6 +22,9 @@ import path from 'path';
 import NoTrailCalculator from '@/components/no-trail-calculator';
 import TestPhotoFlipper from '@/components/blog/trouble-with-500-rule/test-photo-flipper';
 import Link from 'next/link';
+import Image from 'next/image';
+import { visit } from 'unist-util-visit';
+import { createImageSet, ImageMetadata } from 'lib/blog-image';
 
 const StyledElectronicsIcon = styled(IdeaUpElectronicsIcon)`
   width: 5em;
@@ -411,13 +414,26 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
     return true;
   });
 
+  const imageNodes: any[] = [];
   const mdxSource = await serialize(blogPostData.content, {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
-      remarkPlugins: [remarkSmartypants],
+      remarkPlugins: [
+        remarkSmartypants,
+        // Inline plugin to grab info on all
+        // images
+        () => {
+          function transformer(tree: any) {
+            visit(tree, 'image', (node: any) => {
+              imageNodes.push(node);
+            });
+          }
+
+          return transformer;
+        },
+      ],
       rehypePlugins: [
         rehypeSlug,
-        // [rehypePrism, { plugins: ['line-numbers'] }],
         [
           rehypeAutolinkHeadings,
           {
@@ -459,9 +475,44 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
     },
   });
 
+  // Process local image nodes
+  //   {
+  //     type: 'image',
+  //     title: 'Corner Park in Winslow, AZ',
+  //     url: './IMG_0241.jpg',
+  //     alt: 'Winslow AZ',
+  //     position: {
+  //       start: { line: 6, column: 1, offset: 518 },
+  //       end: { line: 6, column: 59, offset: 576 }
+  //     }
+  //   }
+  // This step copies the images to the
+  // public folder and populates
+  // allImageMetadata with the data that
+  // will be needed to create the proper
+  // <Image /> tag in render
+  const allImageMetadata: { [id: string]: ImageMetadata } = {};
+  for (const node of imageNodes) {
+    if (!node.url.includes('://')) {
+      try {
+        const imageMetadata = await createImageSet(
+          blogPostData.id,
+          blogPostData.category,
+          node,
+        );
+        allImageMetadata[node.url] = imageMetadata;
+      } catch (err) {
+        console.log(
+          `blog[${blogPostData.id}]: Error processing image ${node.url}: ${err}`,
+        );
+      }
+    }
+  }
+
   return {
     props: {
       blogPostData,
+      allImageMetadata,
       previous,
       next,
       source: mdxSource,
@@ -478,11 +529,13 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
 
 export default function BlogPost({
   blogPostData,
+  allImageMetadata,
   previous,
   next,
   source,
 }: {
   blogPostData: BlogPostData;
+  allImageMetadata: { [id: string]: ImageMetadata };
   previous: LinkInfo | null;
   next: LinkInfo | null;
   source: MDXRemoteSerializeResult<Record<string, unknown>>;
@@ -507,7 +560,10 @@ export default function BlogPost({
 
     document.addEventListener('keydown', onKeyDown, false);
 
-    // See if there is another way to do this
+    // This stuff needs to be done here because
+    // otherwise the Prism party starts early
+    // (before the initial render has completed)
+    // and causes hydration issues
     const linkTag = document.createElement('link');
     linkTag.rel = 'stylesheet';
     linkTag.href = '/prism.css';
@@ -523,9 +579,23 @@ export default function BlogPost({
 
   const components = {
     img: (props: any) => {
-      const newProps = { ...props };
-      newProps.src = `/images/blog/${blogPostData.id}/${props.src}`;
-      return <img {...newProps}></img>;
+      const metadata = allImageMetadata[props.src];
+      if (metadata) {
+        return (
+          <Image
+            src={metadata.src}
+            alt={metadata.alt}
+            width={metadata.width}
+            height={metadata.height}
+            title={metadata.title}
+            placeholder="blur"
+            blurDataURL={metadata.imgBase64}
+          />
+        );
+      } else {
+        // External image
+        return <img {...props}></img>;
+      }
     },
     code: (props: any) => {
       if (!props.className) {

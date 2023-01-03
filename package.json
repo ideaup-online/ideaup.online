@@ -41,6 +41,7 @@
     "reading-time": "1.5.0",
     "rehype-autolink-headings": "6.1.1",
     "rehype-slug": "5.1.0",
+    "sharp": "0.31.3",
     "smartquotes-ts": "0.0.2",
     "svgr.macro": "1.0.4",
     "unified": "^10"

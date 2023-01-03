@@ -1,7 +1,18 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+module.exports = {
   reactStrictMode: true,
   swcMinify: true,
-};
+  webpack: (
+    config,
+    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack },
+  ) => {
+    if (!isServer) {
+      config.externals = {
+        sharp: 'commonjs sharp',
+      };
+    }
 
-module.exports = nextConfig;
+    return config;
+  },
+};
