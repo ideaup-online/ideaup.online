@@ -249,7 +249,7 @@ const Modal = styled.div`
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
+  background-color: rgba(80, 80, 80, 0.7); /* Black w/ opacity */
 
   .modal-content {
     margin: auto;
@@ -261,15 +261,20 @@ const Modal = styled.div`
     height: auto;
     object-fit: scale-down;
     background: #222;
+    box-shadow: 2px 2px 5px black;
+  }
+  .modal-caption-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0.5rem;
   }
   #modal-caption {
-    margin: auto;
-    display: block;
-    width: 80%;
-    text-align: center;
     color: var(--base-color);
-    padding: 10px 0;
-    height: 150px;
+    padding: 10px;
+    border-radius: 0.5rem;
+    background-color: var(--default-bg-color);
+    box-shadow: 2px 2px 5px black;
   }
   .modal-close {
     position: absolute;
@@ -308,7 +313,7 @@ function modalClose() {
   }
 }
 
-function modalClick(e: Event) {
+function modalClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
   const modalImg = document.getElementById('image-modal-content');
 
   if (e.target !== modalImg) {
@@ -541,23 +546,6 @@ export default function BlogPost({
   source: MDXRemoteSerializeResult<Record<string, unknown>>;
 }): JSX.Element {
   useEffect(() => {
-    const modal = document.getElementById('image-modal');
-    if (modal) {
-      modal.onclick = modalClick;
-    }
-
-    const closeSpan = document.getElementById('modal-close');
-    if (closeSpan) {
-      closeSpan.onclick = function () {
-        modalClose();
-      };
-    }
-
-    const elems = document.getElementsByClassName('modal-image-wrapper');
-    for (let i = 0; i < elems.length; i++) {
-      (elems[i] as HTMLElement).onclick = showModalImage;
-    }
-
     document.addEventListener('keydown', onKeyDown, false);
 
     // This stuff needs to be done here because
@@ -696,12 +684,18 @@ export default function BlogPost({
       showStyle="compact"
       content={
         <div>
-          <Modal id="image-modal">
-            <span className="modal-close" id="modal-close">
+          <Modal id="image-modal" onClick={modalClick}>
+            <span
+              className="modal-close"
+              id="modal-close"
+              onClick={() => modalClose()}
+            >
               &times;
             </span>
             <img className="modal-content" id="image-modal-content" alt="" />
-            <div id="modal-caption"></div>
+            <div className="modal-caption-wrapper">
+              <div id="modal-caption"></div>
+            </div>
           </Modal>
           <StyledArticle>
             <PostHeader id="post-header">
