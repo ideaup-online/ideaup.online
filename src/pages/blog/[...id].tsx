@@ -591,16 +591,6 @@ export default function BlogPost({
   }, []);
 
   const components = {
-    a: (props: any) => {
-      if (!props.href.startsWith('#')) {
-        if (props.href.includes('://')) {
-          return <a {...props}>{props.children}</a>;
-        } else {
-          return <Link {...props}>{props.children}</Link>;
-        }
-      }
-      return <a {...props}>{props.children}</a>;
-    },
     img: (props: any) => {
       const metadata = allImageMetadata[props.src];
       if (metadata) {
