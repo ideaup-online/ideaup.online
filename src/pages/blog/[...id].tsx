@@ -428,16 +428,41 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
         // Inline plugin to grab info on all
         // images
         () => {
-          function transformer(tree: any) {
+          return (tree: any) => {
             visit(tree, 'image', (node: any) => {
               imageNodes.push(node);
             });
-          }
-
-          return transformer;
+          };
         },
       ],
       rehypePlugins: [
+        () => {
+          return (tree: any) => {
+            visit(tree, 'element', (node: any) => {
+              if (node.tagName === 'a') {
+                if (node.properties.href.includes('://')) {
+                  // Off-page link, make it open in
+                  // a new window
+                  node.properties.target = '_blank';
+                  node.properties.rel = 'noopener noreferrer';
+                } else if (!node.properties.href.startsWith('#')) {
+                  // Not an off-page link and not
+                  // an in-page link, see if it refers to
+                  // another blog page
+                  const basename = path.basename(node.properties.href);
+                  blogHeadlineData.every((data) => {
+                    if (data.id === basename) {
+                      node.properties.href = `/blog/${data.category}/${data.id}`;
+                      return false;
+                    }
+
+                    return true;
+                  });
+                }
+              }
+            });
+          };
+        },
         rehypeSlug,
         [
           rehypeAutolinkHeadings,
@@ -566,6 +591,16 @@ export default function BlogPost({
   }, []);
 
   const components = {
+    a: (props: any) => {
+      if (!props.href.startsWith('#')) {
+        if (props.href.includes('://')) {
+          return <a {...props}>{props.children}</a>;
+        } else {
+          return <Link {...props}>{props.children}</Link>;
+        }
+      }
+      return <a {...props}>{props.children}</a>;
+    },
     img: (props: any) => {
       const metadata = allImageMetadata[props.src];
       if (metadata) {
