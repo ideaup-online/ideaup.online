@@ -267,7 +267,7 @@ const Modal = styled.div`
     display: block;
     width: 80%;
     text-align: center;
-    color: coral;
+    color: var(--base-color);
     padding: 10px 0;
     height: 150px;
   }
@@ -282,7 +282,7 @@ const Modal = styled.div`
   }
   .modal-close:hover,
   .modal-close:focus {
-    color: coral;
+    color: var(--base-color);
     text-decoration: none;
     cursor: pointer;
   }
