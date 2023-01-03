@@ -322,7 +322,7 @@ function onKeyDown(e: KeyboardEvent) {
   }
 }
 
-function showModalImage(e: MouseEvent) {
+function showModalImage(e: React.MouseEvent<HTMLImageElement, MouseEvent>) {
   const modal = document.getElementById('image-modal');
   const modalImg = document.getElementById('image-modal-content');
   const caption = document.getElementById('modal-caption');
@@ -341,7 +341,7 @@ function showModalImage(e: MouseEvent) {
   }
 
   if (caption) {
-    caption.innerText = (e.target as HTMLImageElement).alt;
+    caption.innerText = (e.target as HTMLImageElement).title;
   }
 }
 
@@ -590,6 +590,8 @@ export default function BlogPost({
             title={metadata.title}
             placeholder="blur"
             blurDataURL={metadata.imgBase64}
+            onClick={showModalImage}
+            style={{ cursor: 'pointer' }}
           />
         );
       } else {
