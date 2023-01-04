@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import toReactComponent from 'svgr.macro';
-import SvgInline from '../../components/svg-inline';
+import SiteLogo from '../../../content/assets/icons/site-logo.svg';
+import SvgInline from '../svg-inline';
 
 const StyledSvg = styled(SvgInline)`
   .idea-up-site-icon-arrow {
@@ -45,9 +45,7 @@ const IdeaUpSiteLogo = (props: any): JSX.Element => {
     <StyledSvg
       className={props.className}
       id={props.id}
-      component={toReactComponent(
-        '../../../content/assets/icons/site-logo.svg',
-      )}
+      component={<SiteLogo />}
     />
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import toReactComponent from 'svgr.macro';
+import TextLogo from '../../../content/assets/icons/text-logo.svg';
 import SvgInline from '../../components/svg-inline';
 
 const StyledSvg = styled(SvgInline)`
@@ -17,9 +17,7 @@ const IdeaUpTextLogo = (props: any): JSX.Element => {
     <StyledSvg
       id={props.id}
       className={props.className}
-      component={toReactComponent(
-        '../../../content/assets/icons/text-logo.svg',
-      )}
+      component={<TextLogo />}
     />
   );
 };

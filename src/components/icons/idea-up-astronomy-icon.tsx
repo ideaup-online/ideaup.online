@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import toReactComponent from 'svgr.macro';
+import AstronomyIcon from '../../../content/assets/icons/astronomy-category-icon.svg';
 import SvgInline from '../svg-inline';
 
 const StyledSvg = styled(SvgInline)`
@@ -38,9 +38,7 @@ const IdeaUpAstronomyIcon = (props: any): JSX.Element => {
     <StyledSvg
       className={props.className}
       id={props.id}
-      component={toReactComponent(
-        '../../../content/assets/icons/astronomy-category-icon.svg',
-      )}
+      component={<AstronomyIcon />}
     />
   );
 };
