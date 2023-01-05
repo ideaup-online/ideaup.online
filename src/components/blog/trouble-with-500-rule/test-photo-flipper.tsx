@@ -41,6 +41,7 @@ const FullSizeImage = styled(Image)`
   grid-row: 1 / auto;
   z-index: 1;
   width: 100%;
+  height: initial;
   border-radius: 0.4em;
 `;
 
@@ -215,7 +216,7 @@ const TestPhotoFlipper = (props: any): JSX.Element => {
             >
               <FullSizeImage
                 src={testPoint.fullSizeSrc}
-                alt={`full size image for ${testPoint.timeStr} seconds`}
+                alt={`full size image for ${testPoint.timeStr}`}
                 width={testPoint.fullSizeWidth}
                 height={testPoint.fullSizeHeight}
                 placeholder="blur"
@@ -223,7 +224,7 @@ const TestPhotoFlipper = (props: any): JSX.Element => {
               />
               <CentralCropImage
                 src={testPoint.centralCropSrc}
-                alt={`full size image for ${testPoint.timeStr} seconds`}
+                alt={`central crop image for ${testPoint.timeStr}`}
                 width={testPoint.centralCropWidth}
                 height={testPoint.centralCropHeight}
                 placeholder="blur"
