@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-// import { useStaticQuery, graphql } from 'gatsby';
+import React, { useCallback, useEffect, useState } from 'react';
+import Image from 'next/image';
 import styled from '@emotion/styled';
-import { redirect } from 'next/dist/server/api-utils';
-// import Img from 'gatsby-image';
+import jsonProps from './test-photo-flipper-props.json';
 
 const PhotoFlipper = styled.div``;
 
@@ -24,9 +23,7 @@ const Card = styled.div`
   display: grid;
 `;
 
-const Img = styled.img``;
-
-const CentralCropImage = styled(Img)`
+const CentralCropImage = styled(Image)`
   width: 40%;
   margin: 0.75em;
   grid-column: 1 / auto;
@@ -39,7 +36,7 @@ const CentralCropImage = styled(Img)`
   border-radius: 0.3em;
 `;
 
-const FullSizeImage = styled(Img)`
+const FullSizeImage = styled(Image)`
   grid-column: 1 / auto;
   grid-row: 1 / auto;
   z-index: 1;
@@ -66,7 +63,7 @@ const CurrentCardLabel = styled.div`
   grid-column: 2 / auto;
   text-align: middle;
   justify-self: center;
-  color: coral;
+  color: var(--base-color);
 `;
 
 const CardNavButton = styled.button`
@@ -75,7 +72,7 @@ const CardNavButton = styled.button`
   -webkit-appearance: none;
   background-color: initial;
   border: none;
-  color: #787878;
+  color: var(--accent-color);
   cursor: pointer;
   outline: none;
 `;
@@ -88,205 +85,172 @@ const NextCardButton = styled(CardNavButton)`
   grid-column: 3 / auto;
 `;
 
-const testPoints: any[] = [];
-let currentCardIdx = 0;
-
-function showIdx(idx: number) {
-  const element = document.getElementById('photo-flipper-card-' + idx);
-  element?.classList.remove('photo-flipper-hidden');
-  element?.classList.add('photo-flipper-visible');
-}
-
-function hideIdx(idx: number) {
-  const element = document.getElementById('photo-flipper-card-' + idx);
-  element?.classList.remove('photo-flipper-visible');
-  element?.classList.add('photo-flipper-hidden');
-}
-
-function updateControlBlock() {
-  const currentCardLabel = document.getElementById(
-    'photo-flipper-current-card-label',
-  );
-  if (currentCardLabel) {
-    currentCardLabel.innerText = testPoints[currentCardIdx].timeStr;
-
-    if (currentCardIdx === 0) {
-      document
-        .getElementById('photo-flipper-control-previous-button')
-        ?.classList.add('photo-flipper-invisible');
-    } else {
-      document
-        .getElementById('photo-flipper-control-previous-button')
-        ?.classList.remove('photo-flipper-invisible');
-    }
-
-    if (currentCardIdx === testPoints.length - 1) {
-      document
-        .getElementById('photo-flipper-control-next-button')
-        ?.classList.add('photo-flipper-invisible');
-    } else {
-      document
-        .getElementById('photo-flipper-control-next-button')
-        ?.classList.remove('photo-flipper-invisible');
-    }
-  } else {
-    // Could't grab the current card label from the dom;
-    // it must not have updated yet, try again in a quarter second
-    setTimeout(updateControlBlock, 250);
-  }
-}
-
-function onPrevious() {
-  const oldIdx = currentCardIdx;
-
-  if (currentCardIdx > 0) {
-    currentCardIdx--;
-
-    showIdx(currentCardIdx);
-    hideIdx(oldIdx);
-    updateControlBlock();
-  }
-}
-
-function onNext() {
-  const oldIdx = currentCardIdx;
-
-  if (currentCardIdx < testPoints.length - 1) {
-    currentCardIdx++;
-
-    showIdx(currentCardIdx);
-    hideIdx(oldIdx);
-    updateControlBlock();
-  }
-}
-
 const TestPhotoFlipper = (props: any): JSX.Element => {
-  // // const data = useStaticQuery(graphql`
-  // //   {
-  // //     fullSize: allFile(
-  // //       filter: {
-  // //         relativePath: {
-  // //           regex: "/^trouble-with-500-rule/test-exposures/full-size/"
-  // //         }
-  // //       }
-  // //     ) {
-  // //       edges {
-  // //         node {
-  // //           name
-  // //           childImageSharp {
-  // //             fluid(maxWidth: 1000, quality: 100) {
-  // //               ...GatsbyImageSharpFluid
-  // //             }
-  // //           }
-  // //         }
-  // //       }
-  // //     }
-  // //     centralCrop: allFile(
-  // //       filter: {
-  // //         relativePath: {
-  // //           regex: "/^trouble-with-500-rule/test-exposures/central-crop/"
-  // //         }
-  // //       }
-  // //     ) {
-  // //       edges {
-  // //         node {
-  // //           name
-  // //           childImageSharp {
-  // //             fluid(maxWidth: 1000, quality: 100) {
-  // //               ...GatsbyImageSharpFluid
-  // //             }
-  // //           }
-  // //         }
-  // //       }
-  // //     }
-  // //   }
-  // // `);
+  const [currentCardIdx, setCurrentCardIdx] = useState(0);
 
-  // useEffect(() => {
-  //   showIdx(currentCardIdx);
-  //   updateControlBlock();
-  // });
+  const testPoints = [] as any;
 
-  // testPoints.length = 0;
+  function showIdx(idx: number) {
+    const element = document.getElementById('photo-flipper-card-' + idx);
+    element?.classList.remove('photo-flipper-hidden');
+    element?.classList.add('photo-flipper-visible');
+  }
 
-  // data.fullSize.edges.forEach(({ node }) => {
-  //   var timeStr, time;
+  function hideIdx(idx: number) {
+    const element = document.getElementById('photo-flipper-card-' + idx);
+    element?.classList.remove('photo-flipper-visible');
+    element?.classList.add('photo-flipper-hidden');
+  }
 
-  //   const idxDot = node.name.indexOf('.');
-  //   timeStr = node.name.substring('500-rule-'.length, idxDot);
-  //   time = parseInt(timeStr.substring(0, timeStr.length - 1));
-  //   testPoints.push({
-  //     timeStr: timeStr,
-  //     time: time,
-  //     fullSizeName: node.name,
-  //     fullSizeFluid: node.childImageSharp.fluid,
-  //   });
-  // });
+  const updateControlBlock = useCallback(() => {
+    const currentCardLabel = document.getElementById(
+      'photo-flipper-current-card-label',
+    );
+    if (currentCardLabel) {
+      currentCardLabel.innerText = testPoints[currentCardIdx].timeStr;
 
-  // data.centralCrop.edges.forEach(({ node }) => {
-  //   var timeStr;
+      if (currentCardIdx === 0) {
+        document
+          .getElementById('photo-flipper-control-previous-button')
+          ?.classList.add('photo-flipper-invisible');
+      } else {
+        document
+          .getElementById('photo-flipper-control-previous-button')
+          ?.classList.remove('photo-flipper-invisible');
+      }
 
-  //   const idxDot = node.name.indexOf('.');
-  //   timeStr = node.name.substring('500-rule-'.length, idxDot);
-  //   testPoints.forEach((testPoint) => {
-  //     if (testPoint.timeStr === timeStr) {
-  //       testPoint.centralCropName = node.name;
-  //       testPoint.centralCropFluid = node.childImageSharp.fluid;
-  //     }
-  //   });
-  // });
+      if (currentCardIdx === testPoints.length - 1) {
+        document
+          .getElementById('photo-flipper-control-next-button')
+          ?.classList.add('photo-flipper-invisible');
+      } else {
+        document
+          .getElementById('photo-flipper-control-next-button')
+          ?.classList.remove('photo-flipper-invisible');
+      }
+    } else {
+      // Could't grab the current card label from the dom;
+      // it must not have updated yet, try again in a quarter second
+      setTimeout(updateControlBlock, 250);
+    }
+  }, [currentCardIdx]);
 
-  // testPoints.sort((a, b) => {
-  //   return a.time - b.time;
-  // });
+  function onPrevious() {
+    setCurrentCardIdx((prevValue: number): number => {
+      if (prevValue > 0) {
+        hideIdx(prevValue);
 
-  // return (
-  //   <PhotoFlipper className={props.className}>
-  //     <PhotoStack>
-  //       {testPoints.map((testPoint, idx) => {
-  //         return (
-  //           <Card
-  //             id={'photo-flipper-card-' + idx}
-  //             key={'photo-flipper-card-' + idx}
-  //             className="photo-flipper-hidden"
-  //           >
-  //             <FullSizeImage fluid={testPoint.fullSizeFluid} />
-  //             <CentralCropImage fluid={testPoint.centralCropFluid} />
-  //           </Card>
-  //         );
-  //       })}
-  //       <ControlBlock id="photo-flipper-control-block">
-  //         <PreviousCardButton
-  //           id="photo-flipper-control-previous-button"
-  //           onClick={onPrevious}
-  //         >
-  //           ❮
-  //         </PreviousCardButton>
+        return prevValue - 1;
+      } else {
+        return prevValue;
+      }
+    });
+  }
 
-  //         <CurrentCardLabel id="photo-flipper-current-card-label" />
+  function onNext() {
+    setCurrentCardIdx((prevValue: number): number => {
+      if (prevValue < testPoints.length - 1) {
+        hideIdx(prevValue);
+        return prevValue + 1;
+      } else {
+        return prevValue;
+      }
+    });
+  }
 
-  //         <NextCardButton
-  //           id="photo-flipper-control-next-button"
-  //           onClick={onNext}
-  //         >
-  //           ❯
-  //         </NextCardButton>
-  //       </ControlBlock>
-  //     </PhotoStack>
-  //   </PhotoFlipper>
-  // );
+  useEffect(() => {
+    showIdx(currentCardIdx);
+    updateControlBlock();
+  }, [currentCardIdx, updateControlBlock]);
 
-  const RedOnWhite = styled.div`
-    color: firebrick;
-    background-color: white;
-    text-align: center;
-    padding: 0.2rem;
-    border-radius: 0.25rem;
-    font-weight: 400;
-  `;
+  const path = require('path');
+
+  jsonProps.fullSize.forEach((imageProps) => {
+    const file = path.basename(imageProps.src);
+    const idxDot = file.indexOf('.');
+    const timeStr = file.substring('500-rule-'.length, idxDot);
+    const time = parseInt(timeStr.substring(0, timeStr.length - 1));
+    testPoints.push({
+      timeStr: timeStr,
+      time: time,
+      fullSizeSrc: imageProps.src,
+      fullSizeWidth: imageProps.width,
+      fullSizeHeight: imageProps.height,
+      fullSizeImgBase64: imageProps.imgBase64,
+    });
+  });
+
+  jsonProps.centralCrop.forEach((imageProps) => {
+    const file = path.basename(imageProps.src);
+
+    const idxDot = file.indexOf('.');
+    const timeStr = file.substring('500-rule-'.length, idxDot);
+    testPoints.every((testPoint: any) => {
+      if (testPoint.timeStr === timeStr) {
+        testPoint.centralCropSrc = imageProps.src;
+        testPoint.centralCropWidth = imageProps.width;
+        testPoint.centralCropHeight = imageProps.height;
+        testPoint.centralCropImgBase64 = imageProps.imgBase64;
+
+        return false;
+      }
+
+      return true;
+    });
+  });
+
+  testPoints.sort((a: any, b: any) => {
+    return a.time - b.time;
+  });
 
   return (
-    <RedOnWhite>This will be a test photo flipper again one day</RedOnWhite>
+    <PhotoFlipper className={props.className}>
+      <PhotoStack>
+        {testPoints.map((testPoint: any, idx: number) => {
+          return (
+            <Card
+              id={'photo-flipper-card-' + idx}
+              key={'photo-flipper-card-' + idx}
+              className="photo-flipper-hidden"
+            >
+              <FullSizeImage
+                src={testPoint.fullSizeSrc}
+                alt={`full size image for ${testPoint.timeStr} seconds`}
+                width={testPoint.fullSizeWidth}
+                height={testPoint.fullSizeHeight}
+                placeholder="blur"
+                blurDataURL={testPoint.fullSizeImgBase64}
+              />
+              <CentralCropImage
+                src={testPoint.centralCropSrc}
+                alt={`full size image for ${testPoint.timeStr} seconds`}
+                width={testPoint.centralCropWidth}
+                height={testPoint.centralCropHeight}
+                placeholder="blur"
+                blurDataURL={testPoint.centralCropImgBase64}
+              />
+            </Card>
+          );
+        })}
+        <ControlBlock id="photo-flipper-control-block">
+          <PreviousCardButton
+            id="photo-flipper-control-previous-button"
+            onClick={onPrevious}
+          >
+            ❮
+          </PreviousCardButton>
+
+          <CurrentCardLabel id="photo-flipper-current-card-label" />
+
+          <NextCardButton
+            id="photo-flipper-control-next-button"
+            onClick={onNext}
+          >
+            ❯
+          </NextCardButton>
+        </ControlBlock>
+      </PhotoStack>
+    </PhotoFlipper>
   );
 };
 

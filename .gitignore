@@ -39,3 +39,4 @@ yarn-error.log*
 next-env.d.ts
 
 public/
+src/components/blog/trouble-with-500-rule/test-photo-flipper-props.json

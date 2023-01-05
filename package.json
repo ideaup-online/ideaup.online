@@ -11,7 +11,9 @@
     "typescript"
   ],
   "scripts": {
+    "predev": "node find-and-execute-prebuild-scripts.js",
     "dev": "next",
+    "prebuild": "node find-and-execute-prebuild-scripts.js",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc --noEmit",
