@@ -25,6 +25,7 @@ const Card = styled.div`
 
 const CentralCropImage = styled(Image)`
   width: 40%;
+  height: initial;
   margin: 0.75em;
   grid-column: 1 / auto;
   grid-row: 1 / auto;

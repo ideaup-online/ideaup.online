@@ -8,6 +8,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding: 1em;
+  max-width: 120ch;
 `;
 
 const StyledCalc = styled(NoTrailCalculator)``;
