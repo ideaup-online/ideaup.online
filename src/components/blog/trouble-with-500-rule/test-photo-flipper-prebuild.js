@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
 const sharp = require('sharp');
-const { default: full } = require('@babel/core/lib/config/full');
 
 async function createImageSet(file, subDir) {
   // Create the path the browser will need
