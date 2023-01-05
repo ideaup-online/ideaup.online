@@ -4,6 +4,9 @@ import NoTrailCalculator from '../../../components/no-trail-calculator';
 import TestPhotoFlipper from '../../../components/blog/trouble-with-500-rule/test-photo-flipper';
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   padding: 1em;
 `;
 
@@ -17,7 +20,6 @@ const Calc = () => {
       content={
         <Container>
           <StyledCalc />
-          <p></p>
           <TestPhotoFlipper />
         </Container>
       }
