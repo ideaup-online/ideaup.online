@@ -77,7 +77,10 @@ recurseDirs('.', (file) => {
         );
       }
     }
-  } catch {
-    // Don't care
+  } catch (err) {
+    // Don't care (most of the time,
+    // uncomment the following line
+    // for the times when you do)
+    // console.log(`Failed to load file ${file}: ${err}`);
   }
 });

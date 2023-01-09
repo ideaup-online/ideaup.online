@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import Image from 'next/image';
+import Image, { ImageLoaderProps } from 'next/image';
 import styled from '@emotion/styled';
 import jsonProps from './test-photo-flipper-props.json';
 
@@ -92,6 +92,70 @@ const TestPhotoFlipper = (props: any): JSX.Element => {
 
   const testPoints = [] as any;
 
+  const path = require('path');
+
+  function imageLoader(props: ImageLoaderProps): string {
+    const fullSizeBasePath = '/images/component/test-photo-flipper/full-size';
+    const centralCropBasePath =
+      '/images/component/test-photo-flipper/central-crop';
+
+    const dirname = path.dirname(props.src);
+    const filename = path.basename(props.src);
+
+    if (dirname === 'full-size') {
+      for (let fsIdx = 0; fsIdx < jsonProps.fullSize.length; fsIdx++) {
+        const fullSizeProps = jsonProps.fullSize[fsIdx];
+        if (fullSizeProps.fullSizeFilename === filename) {
+          // Find the first image set entry that
+          // is at least as wide as the requested
+          // width and return the path to its
+          // associated image
+          for (let isIdx = 0; isIdx < fullSizeProps.imageSet.length; isIdx++) {
+            const imageSetProps = fullSizeProps.imageSet[isIdx];
+            if (imageSetProps.width >= props.width) {
+              return `${fullSizeBasePath}/${imageSetProps.filename}`;
+            }
+          }
+
+          // If we're still here, we didn't find
+          // an image that was at least the
+          // requested width; return the full
+          // size image
+          return `${fullSizeBasePath}/${fullSizeProps.fullSizeFilename}`;
+        }
+      }
+    } else if (dirname === 'central-crop') {
+      for (let ccIdx = 0; ccIdx < jsonProps.centralCrop.length; ccIdx++) {
+        const centralCropProps = jsonProps.centralCrop[ccIdx];
+        if (centralCropProps.fullSizeFilename === filename) {
+          // Find the first image set entry that
+          // is at least as wide as the requested
+          // width and return the path to its
+          // associated image
+          for (
+            let isIdx = 0;
+            isIdx < centralCropProps.imageSet.length;
+            isIdx++
+          ) {
+            const imageSetProps = centralCropProps.imageSet[isIdx];
+            if (imageSetProps.width >= props.width) {
+              return `${centralCropBasePath}/${imageSetProps.filename}`;
+            }
+          }
+
+          // If we're still here, we didn't find
+          // an image that was at least the
+          // requested width; return the full
+          // size image
+          return `${centralCropBasePath}/${centralCropProps.fullSizeFilename}`;
+        }
+      }
+    }
+
+    console.log(`Unknown dir: ${dirname}`);
+    return '';
+  }
+
   function showIdx(idx: number) {
     const element = document.getElementById('photo-flipper-card-' + idx);
     element?.classList.remove('photo-flipper-hidden');
@@ -135,6 +199,7 @@ const TestPhotoFlipper = (props: any): JSX.Element => {
       // it must not have updated yet, try again in a quarter second
       setTimeout(updateControlBlock, 250);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentCardIdx]);
 
   function onPrevious() {
@@ -165,34 +230,49 @@ const TestPhotoFlipper = (props: any): JSX.Element => {
     updateControlBlock();
   }, [currentCardIdx, updateControlBlock]);
 
-  const path = require('path');
-
   jsonProps.fullSize.forEach((imageProps) => {
-    const file = path.basename(imageProps.src);
+    const file = path.basename(imageProps.fullSizeFilename);
     const idxDot = file.indexOf('.');
     const timeStr = file.substring('500-rule-'.length, idxDot);
     const time = parseInt(timeStr.substring(0, timeStr.length - 1));
+    let sizes = imageProps.imageSet.reduce((prevValue, srcSetProps, idx) => {
+      return `${prevValue}${idx !== 0 ? ', ' : ''}(max-width: ${
+        srcSetProps.width
+      }px) ${srcSetProps.width}px`;
+    }, '');
+    const fullSizeSizesEntry = `${imageProps.width}px`;
+    sizes =
+      sizes === '' ? fullSizeSizesEntry : `${sizes}, ${fullSizeSizesEntry}`;
     testPoints.push({
       timeStr: timeStr,
       time: time,
-      fullSizeSrc: imageProps.src,
+      fullSizeSrc: `full-size/${imageProps.fullSizeFilename}`,
       fullSizeWidth: imageProps.width,
       fullSizeHeight: imageProps.height,
       fullSizeImgBase64: imageProps.imgBase64,
+      fullSizeSizes: sizes,
     });
   });
 
   jsonProps.centralCrop.forEach((imageProps) => {
-    const file = path.basename(imageProps.src);
-
+    const file = path.basename(imageProps.fullSizeFilename);
     const idxDot = file.indexOf('.');
     const timeStr = file.substring('500-rule-'.length, idxDot);
+    let sizes = imageProps.imageSet.reduce((prevValue, srcSetProps, idx) => {
+      return `${prevValue}${idx !== 0 ? ', ' : ''}(max-width: ${
+        srcSetProps.width
+      }px) ${srcSetProps.width}px`;
+    }, '');
+    const fullSizeSizesEntry = `${imageProps.width}px`;
+    sizes =
+      sizes === '' ? fullSizeSizesEntry : `${sizes}, ${fullSizeSizesEntry}`;
     testPoints.every((testPoint: any) => {
       if (testPoint.timeStr === timeStr) {
-        testPoint.centralCropSrc = imageProps.src;
+        testPoint.centralCropSrc = `central-crop/${imageProps.fullSizeFilename}`;
         testPoint.centralCropWidth = imageProps.width;
         testPoint.centralCropHeight = imageProps.height;
         testPoint.centralCropImgBase64 = imageProps.imgBase64;
+        testPoint.centralCropSizes = sizes;
 
         return false;
       }
@@ -216,6 +296,8 @@ const TestPhotoFlipper = (props: any): JSX.Element => {
               className="photo-flipper-hidden"
             >
               <FullSizeImage
+                loader={imageLoader}
+                sizes={testPoint.fullSizeSizes}
                 src={testPoint.fullSizeSrc}
                 alt={`full size image for ${testPoint.timeStr}`}
                 width={testPoint.fullSizeWidth}
@@ -224,6 +306,8 @@ const TestPhotoFlipper = (props: any): JSX.Element => {
                 blurDataURL={testPoint.fullSizeImgBase64}
               />
               <CentralCropImage
+                loader={imageLoader}
+                sizes={testPoint.centralCropSizes}
                 src={testPoint.centralCropSrc}
                 alt={`central crop image for ${testPoint.timeStr}`}
                 width={testPoint.centralCropWidth}

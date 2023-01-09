@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useEffect } from 'react';
 import Layout from '@/components/layout';
 import {
@@ -22,9 +23,9 @@ import path from 'path';
 import NoTrailCalculator from '@/components/no-trail-calculator';
 import TestPhotoFlipper from '@/components/blog/trouble-with-500-rule/test-photo-flipper';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image, { ImageLoaderProps } from 'next/image';
 import { visit } from 'unist-util-visit';
-import { createImageSet, ImageMetadata } from 'lib/blog-image';
+import { createImageSet } from 'lib/create-image-set';
 
 const StyledElectronicsIcon = styled(IdeaUpElectronicsIcon)`
   width: 5em;
@@ -257,7 +258,7 @@ const Modal = styled.div`
     border-radius: 0.5em;
     max-width: 70%;
     max-height: 80%;
-    width: auto;
+    width: 100%;
     height: auto;
     object-fit: scale-down;
     background: #222;
@@ -521,16 +522,51 @@ export async function getStaticProps({ params }: { params: { id: string[] } }) {
   // allImageMetadata with the data that
   // will be needed to create the proper
   // <Image /> tag in render
-  const allImageMetadata: { [id: string]: ImageMetadata } = {};
+  const allImageMetadata: any = {};
   for (const node of imageNodes) {
     if (!node.url.includes('://')) {
       try {
-        const imageMetadata = await createImageSet(
+        // Create the path to the source image file
+        const sourceFilePath = path.posix.join(
+          process.cwd(),
+          'content/blog',
           blogPostData.id,
-          blogPostData.category,
-          node,
+          node.url,
         );
-        allImageMetadata[node.url] = imageMetadata;
+
+        // Create the path to copy the
+        // srcset images to
+        const destdir = path.posix.join(
+          process.cwd(),
+          'public',
+          'images',
+          'blog',
+          blogPostData.category,
+          blogPostData.id,
+        );
+
+        const imageMetadata = await createImageSet(sourceFilePath, destdir);
+
+        // Create string to pass for 'sizes'
+        // property on next/image
+        let sizes = imageMetadata.imageSet.reduce(
+          (prevValue, srcSetProps, idx) => {
+            return `${prevValue}${idx !== 0 ? ', ' : ''}(max-width: ${
+              srcSetProps.width
+            }px) ${srcSetProps.width}px`;
+          },
+          '',
+        );
+        const fullSizeSizesEntry = `${imageMetadata.width}px`;
+        sizes =
+          sizes === '' ? fullSizeSizesEntry : `${sizes}, ${fullSizeSizesEntry}`;
+
+        allImageMetadata[path.basename(node.url)] = {
+          ...imageMetadata,
+          sizes,
+          alt: node.alt,
+          title: node.title,
+        };
       } catch (err) {
         console.log(
           `blog[${blogPostData.id}]: Error processing image ${node.url}: ${err}`,
@@ -565,7 +601,7 @@ export default function BlogPost({
   source,
 }: {
   blogPostData: BlogPostData;
-  allImageMetadata: { [id: string]: ImageMetadata };
+  allImageMetadata: any;
   previous: LinkInfo | null;
   next: LinkInfo | null;
   source: MDXRemoteSerializeResult<Record<string, unknown>>;
@@ -590,13 +626,43 @@ export default function BlogPost({
     };
   }, []);
 
+  function imageLoader(props: ImageLoaderProps): string {
+    const basePath = path.posix.join(
+      '/images',
+      'blog',
+      blogPostData.category,
+      blogPostData.id,
+    );
+
+    const metadata = allImageMetadata[props.src];
+
+    // Find the first image set entry that
+    // is at least as wide as the requested
+    // width and return the path to its
+    // associated image
+    for (let isIdx = 0; isIdx < metadata.imageSet.length; isIdx++) {
+      const imageSetProps = metadata.imageSet[isIdx];
+      if (imageSetProps.width >= props.width) {
+        return `${basePath}/${imageSetProps.filename}`;
+      }
+    }
+
+    // If we're still here, we didn't find
+    // an image that was at least the
+    // requested width; return the full
+    // size image
+    return `${basePath}/${metadata.fullSizeFilename}`;
+  }
+
   const components = {
     img: (props: any) => {
-      const metadata = allImageMetadata[props.src];
+      const metadata = allImageMetadata[path.basename(props.src)];
       if (metadata) {
         return (
           <Image
-            src={metadata.src}
+            loader={imageLoader}
+            sizes={metadata.sizes}
+            src={metadata.fullSizeFilename}
             alt={metadata.alt}
             width={metadata.width}
             height={metadata.height}
