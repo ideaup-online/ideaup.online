@@ -25,7 +25,7 @@ const Card = styled.div`
 
 const CentralCropImage = styled(Image)`
   width: 40%;
-  height: initial;
+  height: auto;
   margin: 0.75em;
   grid-column: 1 / auto;
   grid-row: 1 / auto;
@@ -42,7 +42,7 @@ const FullSizeImage = styled(Image)`
   grid-row: 1 / auto;
   z-index: 1;
   width: 100%;
-  height: initial;
+  height: auto;
   border-radius: 0.4em;
 `;
 
