@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
 const Footie = styled.div`
@@ -20,11 +20,21 @@ const FootieContent = styled.div`
 `;
 
 const LayoutFooter = (): JSX.Element => {
-  const year = new Date().getFullYear();
+  const yearSpanRef = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const year = new Date().getFullYear();
+    if (year > 2019) {
+      if (yearSpanRef.current != null) {
+        yearSpanRef.current.textContent = `-${year}`;
+      }
+    }
+  }, []);
 
   return (
     <Footie>
-      <FootieContent>© 2019-{year} Rich Seiffert</FootieContent>
+      <FootieContent>
+        © 2019<span ref={yearSpanRef}></span> Rich Seiffert
+      </FootieContent>
       <FootieContent>
         All text, bad puns, images, deep insights, videos, terrible jokes,
         mathematical formulas, half–assed ideas and icons on this site are my
