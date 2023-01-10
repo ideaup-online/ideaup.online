@@ -728,8 +728,8 @@ export default function BlogPost({
             const sourceFilePath = path.posix.join(...pathsSource);
             const fs = require('fs-extra');
             try {
-              fs.ensureDir(path.dirname(newFilePath));
-              fs.copy(sourceFilePath, newFilePath);
+              fs.ensureDirSync(path.dirname(newFilePath));
+              fs.copySync(sourceFilePath, newFilePath);
             } catch (err) {
               console.error(`error copying file`, err);
             }
