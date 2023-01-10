@@ -675,6 +675,7 @@ export default function BlogPost({
         );
       } else {
         // External image
+        // eslint-disable-next-line jsx-a11y/alt-text
         return <img {...props}></img>;
       }
     },
